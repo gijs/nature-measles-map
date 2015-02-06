@@ -43,6 +43,7 @@ module.exports = function(grunt){
 						'assets/widget.html',
 						'assets/concat/script-open.txt',
 						'assets/js/buildmap.js',
+						'assets/js/buildbrush.js',
 						'assets/js/index.js',
 						'assets/concat/script-close.txt',
 						'assets/concat/polopoly-footer.html'
@@ -56,6 +57,7 @@ module.exports = function(grunt){
 						'assets/concat/style-close.txt',
 						'assets/widget.html',
 						'assets/concat/script-open.txt',
+						'assets/js/buildmap.js',
 						'assets/js/buildmap.js',
 						'assets/js/index.js',
 						'assets/concat/script-close.txt',

@@ -2,7 +2,7 @@ function buildmap () {
 	/*	GLOBAL VARIABLES FOR D3 */
 
 	/*	Margin, Width and height */
-	var margin = {top: 15, right: 0, bottom: 20, left: 0};
+	var margin = {top: 0, right: 0, bottom: 0, left: 0};
 	var width = $('.outerwrapper').width()  - margin.left - margin.right;
 	var height = 650 - margin.top - margin.bottom;
 	/*	Global variable to control the length of D3 transitons */
@@ -14,7 +14,6 @@ function buildmap () {
 	var year = "1980";
 
 	var yearHeader = d3.select("h2").text(year);
-
 
 	/* Max value is 1122285 -> from Excel */
 
@@ -52,7 +51,6 @@ function buildmap () {
 
 	var countriesSVG = clipGroupSvg.append("g");
 	var bordersSVG = clipGroupSvg.append("g");
-
 
 	d3.csv("data/cases-by-who-region-edit.csv", function (d) {
 		/* Convert the text numbers into real numbers */
@@ -119,31 +117,10 @@ function buildmap () {
 				.attr("fill", "none")
 				.attr("stroke", "#666")
 				.attr("stroke-width", "0.1px");
-
-			myInput.on("input", function () {
-				year = this.value;
-			  	
-				countriesSVG.selectAll("path")
-					.attr("fill", function (d) {
-						if ( d.values ) {
-							if ( d.values[0][year] === "noData") {
-								return "#ccc";
-							} else {
-								return color(d.values[0][year]);
-							}
-						} else {
-							return "#ccc";
-						}
-					});
-
-				yearHeader.text(year);
-
-			});
-
 		});
+
+
 	});
-
-
 
 	function zoomed() {
 		svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
@@ -151,8 +128,5 @@ function buildmap () {
 		bordersSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		// console.log(d3.event.scale);
 	}
-
-
-
 
 }

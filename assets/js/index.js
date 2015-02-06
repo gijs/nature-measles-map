@@ -5,6 +5,7 @@
 				$.getScript("http://d3js.org/topojson.v1.min.js")
 		).then( function () {
 			buildmap();
+			buildbrush();
 		});
 
 	/* End of active code */

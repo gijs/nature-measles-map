@@ -64,11 +64,32 @@
   padding: 10px 10px 0 10px;
   margin: 0;
 }
-.outerwrapper .controls {
-  padding: 0 10px;
+.outerwrapper .axis {
+  font: 10px sans-serif;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
-.outerwrapper input {
-  width: 100%;
+.outerwrapper .axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: 10px;
+  stroke-linecap: round;
+}
+.outerwrapper .axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}
+.outerwrapper .slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  cursor: crosshair;
 }
 
 </style>
@@ -76,9 +97,7 @@
 	<h2>I hope this works</h2>
 	<div id="chart"></div>
 
-	<div class="controls" id="year-slider">
-		<input type="range" min="1980" max="2013" step="1" value="1980" />
-	</div>
+	<div class="controls" id="year-slider"></div>
 </div>
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">
@@ -86,7 +105,7 @@ function buildmap () {
 	/*	GLOBAL VARIABLES FOR D3 */
 
 	/*	Margin, Width and height */
-	var margin = {top: 15, right: 0, bottom: 20, left: 0};
+	var margin = {top: 0, right: 0, bottom: 0, left: 0};
 	var width = $('.outerwrapper').width()  - margin.left - margin.right;
 	var height = 650 - margin.top - margin.bottom;
 	/*	Global variable to control the length of D3 transitons */
@@ -98,7 +117,6 @@ function buildmap () {
 	var year = "1980";
 
 	var yearHeader = d3.select("h2").text(year);
-
 
 	/* Max value is 1122285 -> from Excel */
 
@@ -136,7 +154,6 @@ function buildmap () {
 
 	var countriesSVG = clipGroupSvg.append("g");
 	var bordersSVG = clipGroupSvg.append("g");
-
 
 	d3.csv("data/cases-by-who-region-edit.csv", function (d) {
 		/* Convert the text numbers into real numbers */
@@ -203,31 +220,10 @@ function buildmap () {
 				.attr("fill", "none")
 				.attr("stroke", "#666")
 				.attr("stroke-width", "0.1px");
-
-			myInput.on("input", function () {
-				year = this.value;
-			  	
-				countriesSVG.selectAll("path")
-					.attr("fill", function (d) {
-						if ( d.values ) {
-							if ( d.values[0][year] === "noData") {
-								return "#ccc";
-							} else {
-								return color(d.values[0][year]);
-							}
-						} else {
-							return "#ccc";
-						}
-					});
-
-				yearHeader.text(year);
-
-			});
-
 		});
+
+
 	});
-
-
 
 	function zoomed() {
 		svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
@@ -236,9 +232,73 @@ function buildmap () {
 		// console.log(d3.event.scale);
 	}
 
+}
+function buildbrush () {
+	/* http://bl.ocks.org/mbostock/6452972 */
 
+	/*	Margin, Width and height */
+	var margin = {top: 0, right: 30, bottom: 0, left: 30};
+	var width = $('.outerwrapper').width()  - margin.left - margin.right;
+	var height = 50- margin.top - margin.bottom;
 
+	var brushScale = d3.scale.linear()
+						.domain([1980, 2013])
+						.range([0, width])
+						.clamp(true);
 
+	var brush = d3.svg.brush()
+					.x(brushScale)
+					.extent(0, 0)
+					.on("brush", brushed);
+
+	var rangeSvg = d3.select("#year-slider").append("svg")
+						.attr("width", width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+					  .append("g")
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	rangeSvg.append("g")
+	    .attr("class", "x axis")
+	    .attr("transform", "translate(0," + height / 2 + ")")
+	    .call(d3.svg.axis()
+	      .scale(brushScale)
+	      .orient("bottom")
+	      .tickFormat(function(d) { return d; })
+	      .tickSize(0)
+	      .ticks(20)
+	      .tickPadding(12))
+	  .select(".domain")
+	  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+	    .attr("class", "halo");
+
+	var slider = rangeSvg.append("g")
+    	.attr("class", "slider")
+    	.call(brush);
+
+	slider.selectAll(".extent,.resize")
+    	.remove();
+
+	slider.select(".background")
+    	.attr("height", height);
+
+	var handle = slider.append("circle")
+	    .attr("class", "handle")
+	    .attr("transform", "translate(0," + height / 2 + ")")
+	    .attr("r", 9);
+
+	function brushed() {
+
+		var value = brush.extent()[0];
+
+		if (d3.event.sourceEvent) { // not a programmatic event
+			value = brushScale.invert(d3.mouse(this)[0]);
+			brush.extent([value, value]);
+		}
+
+		handle.attr("cx", brushScale(value));
+		console.log(Math.floor(value));
+	 //  d3.select("body").style("background-color", d3.hsl(value, .8, .8));
+	}
 }
 (function() {
 	var init = function($) {
@@ -247,6 +307,7 @@ function buildmap () {
 				$.getScript("http://d3js.org/topojson.v1.min.js")
 		).then( function () {
 			buildmap();
+			buildbrush();
 		});
 
 	/* End of active code */

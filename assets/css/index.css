@@ -14,9 +14,30 @@
   padding: 10px 10px 0 10px;
   margin: 0;
 }
-.outerwrapper .controls {
-  padding: 0 10px;
+.outerwrapper .axis {
+  font: 10px sans-serif;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
-.outerwrapper input {
-  width: 100%;
+.outerwrapper .axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: 10px;
+  stroke-linecap: round;
+}
+.outerwrapper .axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}
+.outerwrapper .slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  cursor: crosshair;
 }
