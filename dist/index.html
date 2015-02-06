@@ -93,41 +93,9 @@ function buildmap () {
 		/* Convert the text numbers into real numbers */
 		/* If the number is "" make it zero */
 		d.forEach(function (element) {
-			element["1980"] = parseInt(element["1980"], 10) || "noData";
-			element["1981"] = parseInt(element["1981"], 10) || "noData";
-			element["1982"] = parseInt(element["1982"], 10) || "noData";
-			element["1983"] = parseInt(element["1983"], 10) || "noData";
-			element["1984"] = parseInt(element["1984"], 10) || "noData";
-			element["1985"] = parseInt(element["1985"], 10) || "noData";
-			element["1985"] = parseInt(element["1985"], 10) || "noData";
-			element["1986"] = parseInt(element["1986"], 10) || "noData";
-			element["1987"] = parseInt(element["1987"], 10) || "noData";
-			element["1988"] = parseInt(element["1988"], 10) || "noData";
-			element["1989"] = parseInt(element["1989"], 10) || "noData";
-			element["1990"] = parseInt(element["1990"], 10) || "noData";
-			element["1991"] = parseInt(element["1991"], 10) || "noData";
-			element["1992"] = parseInt(element["1992"], 10) || "noData";
-			element["1993"] = parseInt(element["1993"], 10) || "noData";
-			element["1994"] = parseInt(element["1994"], 10) || "noData";
-			element["1995"] = parseInt(element["1995"], 10) || "noData";
-			element["1996"] = parseInt(element["1996"], 10) || "noData";
-			element["1997"] = parseInt(element["1997"], 10) || "noData";
-			element["1998"] = parseInt(element["1998"], 10) || "noData";
-			element["1999"] = parseInt(element["1999"], 10) || "noData";
-			element["2000"] = parseInt(element["2000"], 10) || "noData";
-			element["2001"] = parseInt(element["2001"], 10) || "noData";
-			element["2002"] = parseInt(element["2002"], 10) || "noData";
-			element["2003"] = parseInt(element["2003"], 10) || "noData";
-			element["2004"] = parseInt(element["2004"], 10) || "noData";
-			element["2005"] = parseInt(element["2005"], 10) || "noData";
-			element["2006"] = parseInt(element["2006"], 10) || "noData";
-			element["2007"] = parseInt(element["2007"], 10) || "noData";
-			element["2008"] = parseInt(element["2008"], 10) || "noData";
-			element["2009"] = parseInt(element["2009"], 10) || "noData";
-			element["2010"] = parseInt(element["2010"], 10) || "noData";
-			element["2011"] = parseInt(element["2011"], 10) || "noData";
-			element["2013"] = parseInt(element["2013"], 10) || "noData";
-			element["2014"] = parseInt(element["2014"], 10) || "noData";
+			for (var i = 1980; i < 2014; i++) {
+				element[i] = parseInt(element[i], 10) || "noData";
+			}
 		});
 
 		/*  Nest the data by country code */
