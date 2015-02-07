@@ -10,7 +10,7 @@ function buildParams () {
 	/*	Map margin, width and height */
 	params.mapMargin = {top: 0, right: 0, mid: 0, bottom: 0, left: 0};
 	params.mapWidth = contentWidth  - params.mapMargin.left - params.mapMargin.right;
-	params.mapHeight = contentWidth - params.mapMargin.top - params.mapMargin.bottom;
+	params.mapHeight = (contentWidth * 0.5) - params.mapMargin.top - params.mapMargin.bottom;
 
 	/*	Brush margin, width and height */
 	params.brushMargin = {top: 0, right: 30, bottom: 0, left: 30};
@@ -34,7 +34,7 @@ function buildParams () {
 
 	params.projection = d3.geo.mercator()
 						.scale(650)
-    					.translate([params.mapWidth / 2, params.mapHeight / 2]);
+    					.translate([(params.mapWidth * 0.5), (params.mapHeight * 0.6)]);
 
 	params.path = d3.geo.path()
 					.projection(params.projection);

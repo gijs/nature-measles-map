@@ -64,7 +64,7 @@ BuildWidget.prototype.buildMap = function() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.bordersSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		// console.log(d3.event.scale);
+		console.log(d3.event.translate);
 	}
 
 
