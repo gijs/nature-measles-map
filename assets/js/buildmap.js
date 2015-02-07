@@ -1,7 +1,7 @@
 BuildWidget.prototype.buildMap = function() {
 	var self = this;
 
-	this.svg = d3.select(this.mapTarget).append("svg")
+	this.svg = d3.select(this.params.mapTarget).append("svg")
 					.attr("width", this.params.mapWidth)
 					.attr("height", this.params.mapHeight);
 				  

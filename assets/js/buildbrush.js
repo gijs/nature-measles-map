@@ -7,7 +7,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 					.extent(0, 0)
 					.on("brush", brushed);
 
-	this.rangeSvg = d3.select(this.brushTarget).append("svg")
+	this.rangeSvg = d3.select(this.params.brushTarget).append("svg")
 						.attr("width", this.params.brushWidth + this.params.brushMargin.left + this.params.brushMargin.right)
 						.attr("height", this.params.brushHeight)
 					  .append("g")

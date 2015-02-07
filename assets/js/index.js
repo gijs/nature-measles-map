@@ -39,7 +39,7 @@
 
 					var params = buildParams();
 
-					var measlesMap = new BuildWidget("#chart", "#year-slider", params, features, world);
+					var measlesMap = new BuildWidget(params, features, world);
 
 					measlesMap.buildMap();
 					measlesMap.buildBrush();

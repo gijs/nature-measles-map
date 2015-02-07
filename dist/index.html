@@ -52,9 +52,7 @@
 </div>
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">
-function BuildWidget (mapTarget, brushTarget, params, features, world) {
-	this.mapTarget = mapTarget;
-	this.brushTarget = brushTarget;
+function BuildWidget (params, features, world) {
 	this.params = params;
 	this.features = features;
 	this.world = world;
@@ -63,6 +61,10 @@ function buildParams () {
 	var params = {};
 
 	var contentWidth = jQuery("#content").width();
+
+	/* Target ids */
+	params.mapTarget = "#chart";
+	params.brushTarget = "#year-slider";
 
 	/*	Map margin, width and height */
 	params.mapMargin = {top: 0, right: 0, mid: 0, bottom: 0, left: 0};
@@ -101,7 +103,7 @@ function buildParams () {
 BuildWidget.prototype.buildMap = function() {
 	var self = this;
 
-	this.svg = d3.select(this.mapTarget).append("svg")
+	this.svg = d3.select(this.params.mapTarget).append("svg")
 					.attr("width", this.params.mapWidth)
 					.attr("height", this.params.mapHeight);
 				  
@@ -179,7 +181,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 					.extent(0, 0)
 					.on("brush", brushed);
 
-	this.rangeSvg = d3.select(this.brushTarget).append("svg")
+	this.rangeSvg = d3.select(this.params.brushTarget).append("svg")
 						.attr("width", this.params.brushWidth + this.params.brushMargin.left + this.params.brushMargin.right)
 						.attr("height", this.params.brushHeight)
 					  .append("g")
@@ -295,7 +297,7 @@ BuildWidget.prototype.updateMap = function() {
 
 					var params = buildParams();
 
-					var measlesMap = new BuildWidget("#chart", "#year-slider", params, features, world);
+					var measlesMap = new BuildWidget(params, features, world);
 
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
