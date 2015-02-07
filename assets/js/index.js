@@ -44,6 +44,7 @@
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
+					measlesMap.buildTooltip();
 
 				});
 			});

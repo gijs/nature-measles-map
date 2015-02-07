@@ -10,6 +10,38 @@
 	position: relative;
 	border: 1px solid #c8c7cf;
 
+	.header {
+		h2 {
+			padding: 10px 15px;
+			margin: 0;
+		}
+
+		p {
+			padding: 0 15px;
+			margin: 0;
+		}
+	}
+
+	.chart {
+		position: relative;
+		background-color: #DFF2FF;
+		line-height: 0;
+
+		h3 {
+			position: absolute;
+			margin: 0;
+			top: 20px;
+			left: 15px;
+			z-index: 99;
+			font-size: 2em;
+			user-select: none;			
+		}
+
+		svg {
+			cursor: crosshair;
+		}
+	}
+
 	// SVG brush
 	.axis {
 		font: 10px sans-serif;

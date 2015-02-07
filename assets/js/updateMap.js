@@ -16,4 +16,6 @@ BuildWidget.prototype.updateMap = function() {
 				return self.params.uiColour.noData;
 			}
 		});
+
+	this.tooltip.text(year);
 };

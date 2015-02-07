@@ -60,6 +60,34 @@
   position: relative;
   border: 1px solid #c8c7cf;
 }
+.outerwrapper .header h2 {
+  padding: 10px 15px;
+  margin: 0;
+}
+.outerwrapper .header p {
+  padding: 0 15px;
+  margin: 0;
+}
+.outerwrapper .chart {
+  position: relative;
+  background-color: #DFF2FF;
+  line-height: 0;
+}
+.outerwrapper .chart h3 {
+  position: absolute;
+  margin: 0;
+  top: 20px;
+  left: 15px;
+  z-index: 99;
+  font-size: 2em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.outerwrapper .chart svg {
+  cursor: crosshair;
+}
 .outerwrapper .axis {
   font: 10px sans-serif;
   -webkit-user-select: none;
@@ -102,10 +130,16 @@
 
 </style>
 <div class="outerwrapper">
-	<h2>I hope this works</h2>
-	<div id="chart"></div>
+	<div class="header">
+		<h2>Headline</h2>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur molestiae voluptas deleniti, velit a, culpa reprehenderit eaque aut repellendus. Hic vero voluptates magni voluptas perspiciatis quos, exercitationem suscipit reiciendis rem.</p>
+	</div>
 
 	<div class="controls" id="year-slider"></div>
+
+	<div id="chart" class="chart">
+		<!-- <h3>Year</h3> -->
+	</div>
 
 	<div class="key" id="measles-scale">
 		
@@ -354,7 +388,12 @@ BuildWidget.prototype.buildKey = function() {
 
 
 // buildScales.js
-// buildTooltip.js
+BuildWidget.prototype.buildTooltip = function() {
+	this.tooltip = d3.select(this.params.mapTarget).append("h3");
+
+	this.tooltip.text(this.params.year);
+};
+
 BuildWidget.prototype.updateMap = function() {
 	var self = this;
 
@@ -373,6 +412,8 @@ BuildWidget.prototype.updateMap = function() {
 				return self.params.uiColour.noData;
 			}
 		});
+
+	this.tooltip.text(year);
 };
 
 (function() {
@@ -421,6 +462,7 @@ BuildWidget.prototype.updateMap = function() {
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
+					measlesMap.buildTooltip();
 
 				});
 			});
