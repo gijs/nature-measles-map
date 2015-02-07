@@ -10,10 +10,6 @@
   position: relative;
   border: 1px solid #c8c7cf;
 }
-.outerwrapper h2, .outerwrapper h3, .outerwrapper p {
-  padding: 10px 10px 0 10px;
-  margin: 0;
-}
 .outerwrapper .axis {
   font: 10px sans-serif;
   -webkit-user-select: none;
@@ -40,4 +36,16 @@
   stroke-opacity: .5;
   stroke-width: 1.25px;
   cursor: crosshair;
+}
+.outerwrapper .key h3 {
+  padding: 10px 15px;
+  margin: 0;
+}
+.outerwrapper .key li {
+  display: inline-block;
+  margin-left: 15px;
+  padding-left: 5px;
+  border-left-style: solid;
+  border-left-width: 15px;
+  line-height: 1em;
 }

@@ -43,6 +43,7 @@
 
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
+					measlesMap.buildKey();
 
 				});
 			});

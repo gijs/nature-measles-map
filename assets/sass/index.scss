@@ -10,11 +10,7 @@
 	position: relative;
 	border: 1px solid #c8c7cf;
 
-	h2,h3,p {
-		padding: 10px 10px 0 10px;
-		margin: 0;
-	}
-
+	// SVG brush
 	.axis {
 		font: 10px sans-serif;
 		user-select: none;
@@ -41,6 +37,24 @@
 		stroke-opacity: .5;
 		stroke-width: 1.25px;
 		cursor: crosshair;
+	}
+
+	// Key
+
+	.key {
+		h3 {
+			padding: 10px 15px;
+			margin: 0;
+		}
+
+		li {
+				display: inline-block;
+				margin-left: 15px;
+				padding-left: 5px;
+				border-left-style: solid;
+				border-left-width: 15px;
+				line-height: 1em;
+		}
 	}
 
 } // outerwrapper

@@ -7,13 +7,13 @@ BuildWidget.prototype.updateMap = function() {
 		.attr("fill", function (d) {
 			if ( d.values ) {
 				if ( d.values[0][year] === "noData") {
-					return "#ccc";
+					return self.params.uiColour.noData;
 				} else {
 					return self.params.color(d.values[0][year]);
 				}
 
 			} else {
-				return "#ccc";
+				return self.params.uiColour.noData;
 			}
 		});
 };

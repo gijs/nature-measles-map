@@ -31,13 +31,13 @@ BuildWidget.prototype.buildMap = function() {
 		.attr("fill", function (d) {
 			if ( d.values ) {
 				if ( d.values[0][self.params.year] === "noData") {
-					return "#ccc";
+					return self.params.uiColour.noData;
 				} else {
 					return self.params.color(d.values[0][self.params.year]);
 				}
 
 			} else {
-				return "#ccc";
+				return self.params.uiColour.noData;
 			}
 		})
 		.on("click", function (d) {
@@ -64,8 +64,5 @@ BuildWidget.prototype.buildMap = function() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.bordersSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		console.log(d3.event.translate);
 	}
-
-
 };

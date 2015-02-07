@@ -60,10 +60,6 @@
   position: relative;
   border: 1px solid #c8c7cf;
 }
-.outerwrapper h2, .outerwrapper h3, .outerwrapper p {
-  padding: 10px 10px 0 10px;
-  margin: 0;
-}
 .outerwrapper .axis {
   font: 10px sans-serif;
   -webkit-user-select: none;
@@ -91,6 +87,18 @@
   stroke-width: 1.25px;
   cursor: crosshair;
 }
+.outerwrapper .key h3 {
+  padding: 10px 15px;
+  margin: 0;
+}
+.outerwrapper .key li {
+  display: inline-block;
+  margin-left: 15px;
+  padding-left: 5px;
+  border-left-style: solid;
+  border-left-width: 15px;
+  line-height: 1em;
+}
 
 </style>
 <div class="outerwrapper">
@@ -98,6 +106,10 @@
 	<div id="chart"></div>
 
 	<div class="controls" id="year-slider"></div>
+
+	<div class="key" id="measles-scale">
+		
+	</div>
 </div>
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">
@@ -111,9 +123,27 @@ function buildParams () {
 
 	var contentWidth = jQuery("#content").width();
 
+	params.uiColour = {
+		veryLightGrey: "#ddd",
+		lightGrey: "#999",
+		grey: "#666",
+		darkGrey: "#333",
+		noData: "#ccc"		
+	};
+
+	params.key = {
+		keyRange: [25000, 50000, 75000, 100000, 125000],
+		verticalShift: [20, 36, 60],
+		horizontalShift: 25,
+		keyHead: "Cases of measles"
+	};
+
+	params.duration = 200;
+
 	/* Target ids */
 	params.mapTarget = "#chart";
 	params.brushTarget = "#year-slider";
+	params.keyTarget = "#measles-scale";
 
 	/*	Map margin, width and height */
 	params.mapMargin = {top: 0, right: 0, mid: 0, bottom: 0, left: 0};
@@ -121,7 +151,7 @@ function buildParams () {
 	params.mapHeight = (contentWidth * 0.5) - params.mapMargin.top - params.mapMargin.bottom;
 
 	/*	Brush margin, width and height */
-	params.brushMargin = {top: 0, right: 30, bottom: 0, left: 30};
+	params.brushMargin = {top: 0, right: 25, bottom: 0, left: 25};
 	params.brushWidth = contentWidth  - params.brushMargin.left - params.brushMargin.right;
 	params.brushHeight = 50 - params.brushMargin.top - params.brushMargin.bottom;
 
@@ -135,10 +165,11 @@ function buildParams () {
 	params.year = "1980";
 
 	/* Max value is 1122285 -> from Excel */
-	params.color = d3.scale.linear()
-					.range(["#ffffb2", "#e31a1c"])
-					.domain([0,100000])
-					.clamp("true");
+	params.color = d3.scale.quantile()
+					.range(['rgb(255,255,178)','rgb(254,204,92)','rgb(253,141,60)','rgb(240,59,32)','rgb(189,0,38)'])
+					.domain(params.key.keyRange);
+
+	console.log(params.color.quantiles());
 
 	params.projection = d3.geo.mercator()
 						.scale(650)
@@ -182,13 +213,13 @@ BuildWidget.prototype.buildMap = function() {
 		.attr("fill", function (d) {
 			if ( d.values ) {
 				if ( d.values[0][self.params.year] === "noData") {
-					return "#ccc";
+					return self.params.uiColour.noData;
 				} else {
 					return self.params.color(d.values[0][self.params.year]);
 				}
 
 			} else {
-				return "#ccc";
+				return self.params.uiColour.noData;
 			}
 		})
 		.on("click", function (d) {
@@ -215,10 +246,7 @@ BuildWidget.prototype.buildMap = function() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.bordersSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		console.log(d3.event.translate);
 	}
-
-
 };
 
 /* http://bl.ocks.org/mbostock/6452972 */
@@ -282,7 +310,49 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 // function buildData () {}
 
-// buildKey.js
+BuildWidget.prototype.buildKey = function() {
+	var self = this;
+
+	var quantiles = self.params.color.quantiles();
+
+	var extraQuantiles = [0];
+
+	quantiles.forEach(function(element) { extraQuantiles.push(element); } );
+
+	console.log(extraQuantiles);
+
+	this.key = d3.select(this.params.keyTarget);
+
+	this.key.append("h3").text(this.params.key.keyHead);
+
+	this.list = this.key.append("ul");
+
+	this.list.selectAll("li")
+			.data(extraQuantiles)
+			.enter()
+		  .append("li")
+			.text(function (d,i) {
+				var thisValue = self.params.format(d);
+				var nextValue = self.params.format( extraQuantiles[i+1] -1 );
+
+				if (i === (extraQuantiles.length - 1) ) {
+					return "≥ " + thisValue;
+				} else {
+					return thisValue + " - " + nextValue;
+				}
+
+			})
+			.style("border-left-color", function (d) {
+				return self.params.color(d);
+			});
+		  
+	this.list.append("li")
+		.text("No data")
+		.style("border-left-color", self.params.uiColour.noData);
+};
+
+
+
 // buildScales.js
 // buildTooltip.js
 BuildWidget.prototype.updateMap = function() {
@@ -294,13 +364,13 @@ BuildWidget.prototype.updateMap = function() {
 		.attr("fill", function (d) {
 			if ( d.values ) {
 				if ( d.values[0][year] === "noData") {
-					return "#ccc";
+					return self.params.uiColour.noData;
 				} else {
 					return self.params.color(d.values[0][year]);
 				}
 
 			} else {
-				return "#ccc";
+				return self.params.uiColour.noData;
 			}
 		});
 };
@@ -350,6 +420,7 @@ BuildWidget.prototype.updateMap = function() {
 
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
+					measlesMap.buildKey();
 
 				});
 			});
