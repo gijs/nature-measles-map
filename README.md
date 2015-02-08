@@ -1,5 +1,13 @@
 #Measles infographic for @NatureNews
 
+## To do
+
+- [ ] Redraw on window resize
+- [ ] Reduce number of ticks for small widths
+- [ ] Remove "(the)" from the end of country names
+- [ ] Upload data
+- [ ] Add next and previous buttons and year picker for mobile
+
 Convert the data from excel to csv
 
 	in2csv build/data/Cases_by_WHO_region.xls > build/data/cases-by-who-region.csv
