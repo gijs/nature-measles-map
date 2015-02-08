@@ -89,6 +89,9 @@
 .outerwrapper .chart svg {
   cursor: crosshair;
 }
+.outerwrapper .chart svg .country path {
+  cursor: pointer;
+}
 .outerwrapper .axis {
   font: 10px sans-serif;
   -webkit-user-select: none;
@@ -335,7 +338,7 @@ BuildWidget.prototype.buildMap = function() {
 
 	this.clipGroupSvg = this.svg.append("g").attr("clip-path", "url(#clip)");
 
-	this.countriesSvg = this.clipGroupSvg.append("g");
+	this.countriesSvg = this.clipGroupSvg.append("g").attr("class","country");
 	this.bordersSvg = this.clipGroupSvg.append("g");
 
 	this.svg.call(d3.behavior.zoom()

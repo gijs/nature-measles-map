@@ -15,7 +15,7 @@ BuildWidget.prototype.buildMap = function() {
 
 	this.clipGroupSvg = this.svg.append("g").attr("clip-path", "url(#clip)");
 
-	this.countriesSvg = this.clipGroupSvg.append("g");
+	this.countriesSvg = this.clipGroupSvg.append("g").attr("class","country");
 	this.bordersSvg = this.clipGroupSvg.append("g");
 
 	this.svg.call(d3.behavior.zoom()

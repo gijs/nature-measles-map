@@ -39,6 +39,9 @@
 .outerwrapper .chart svg {
   cursor: crosshair;
 }
+.outerwrapper .chart svg .country path {
+  cursor: pointer;
+}
 .outerwrapper .axis {
   font: 10px sans-serif;
   -webkit-user-select: none;

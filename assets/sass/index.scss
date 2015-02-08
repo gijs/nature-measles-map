@@ -40,6 +40,10 @@
 
 		svg {
 			cursor: crosshair;
+
+			.country path {
+				cursor: pointer;
+			}
 		}
 	}
 
