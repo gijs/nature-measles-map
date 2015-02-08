@@ -256,7 +256,7 @@ function buildParams () {
 
 	params.year = "1980";
 
-	params.duration = 200;
+	params.duration = 100;
 
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.quantile()
@@ -457,7 +457,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 	    .style("text-anchor", "middle")
 	    .text(this.params.key.keyHead);
 
-	this.lifeCycleSvg.append("path")
+	this.lifeCycleLine = this.lifeCycleSvg.append("path")
 		.data([this.params.selectedData, function (d) {
 			return d.date;
 		}])
@@ -466,6 +466,26 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("stroke", this.params.uiColour.lineColour)
 		.attr("stroke-width", "3px")
 		.attr("d", this.line);
+
+	this.lifeCycleCircles = this.lifeCycleSvg.append("g");
+
+	this.lifeCycleCircles.selectAll("circle")
+		.data(this.params.selectedData, function (d) {
+			return d.date;
+		})
+		.enter().append("circle")
+		.attr("cx", function(d) {
+			return self.xScaleLifeCycle(d.date);
+		})
+		.attr("cy", function(d) {
+			return self.yScaleLifeCycle(d.cases);
+		})
+		.attr("r", "3px")
+		.attr("fill", this.params.uiColour.veryLightGrey)
+		.attr("stroke-width",'2px')
+		.attr("stroke",this.params.uiColour.lineColour);
+
+
 };
 
 BuildWidget.prototype.updateLifeCycle = function() {
@@ -485,15 +505,48 @@ BuildWidget.prototype.updateLifeCycle = function() {
 			.duration(this.params.duration)
 			.call(this.yAxisLifeCycle);
 			
-		this.lifeCycleSvg.select("path.line")
+		this.lifeCycleLine
 			.data([this.params.selectedData, function (d) {
 				return d.date;
 			}])
 			.attr("d", this.line);
+
+		this.lifeCycleCircles.selectAll("circle")
+			.data(this.params.selectedData, function (d) {
+				return d.date;
+			})
+			.attr("cx", function(d) {
+				return self.xScaleLifeCycle(d.date);
+			})
+			.attr("cy", function(d) {
+				return self.yScaleLifeCycle(d.cases);
+			});
+
+		this.lifeCycleCircles.selectAll("circle")
+			.data(this.params.selectedData, function (d) {
+				return d.date;
+			})
+			.exit()
+			.remove();
+
+		this.lifeCycleCircles.selectAll("circle")
+			.data(this.params.selectedData, function (d) {
+				return d.date;
+			})
+			.enter().append("circle")
+			.attr("cx", function(d) {
+				return self.xScaleLifeCycle(d.date);
+			})
+			.attr("cy", function(d) {
+				return self.yScaleLifeCycle(d.cases);
+			})
+			.attr("r", "3px")
+			.attr("fill", this.params.uiColour.veryLightGrey)
+			.attr("stroke-width",'2px')
+			.attr("stroke",this.params.uiColour.lineColour);
 	}
-
 };
-
+ 
 BuildWidget.prototype.buildData = function() {
 	this.params.selectedID = this.features[this.params.selectedFeature].id;
 

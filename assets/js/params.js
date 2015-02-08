@@ -59,7 +59,7 @@ function buildParams () {
 
 	params.year = "1980";
 
-	params.duration = 200;
+	params.duration = 100;
 
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.quantile()
