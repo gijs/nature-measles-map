@@ -32,6 +32,7 @@ function buildParams () {
 	params.keyTarget = "#measles-scale";
 	params.lifeCycleChartTarget = "#life-cycle-chart";
 	params.selectedCountryTarget = "#selected-country";
+	params.checkboxTarget = "#scale-y-axis";
 
 	/*	Map margin, width and height */
 	params.mapMargin = {top: 0, right: 15, bottom: 0, left: 15};
@@ -47,6 +48,7 @@ function buildParams () {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
+	params.scaleYAxis = false;
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])

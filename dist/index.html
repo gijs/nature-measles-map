@@ -93,8 +93,17 @@
   margin: 0 15px 15px 15px;
   clear: both;
 }
-.outerwrapper .info-box p {
+.outerwrapper .info-box .life-cycle-header {
   padding: 15px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.outerwrapper .info-box p {
+  padding: 0;
   margin: 0;
 }
 .outerwrapper .info-box svg {
@@ -120,7 +129,10 @@
 
 	<div class="info-box" id="info-box">
 		
-		<p class="country" id="selected-country"></p>
+		<div class="life-cycle-header">
+			<p class="country" id="selected-country"></p>
+			<label>Scale y axis: <input id="scale-y-axis" type="checkbox"></label>
+		</div>
 		
 		<div class="life-cycle-chart" id="life-cycle-chart"></div>
 	</div>
@@ -214,6 +226,7 @@ function buildParams () {
 	params.keyTarget = "#measles-scale";
 	params.lifeCycleChartTarget = "#life-cycle-chart";
 	params.selectedCountryTarget = "#selected-country";
+	params.checkboxTarget = "#scale-y-axis";
 
 	/*	Map margin, width and height */
 	params.mapMargin = {top: 0, right: 15, bottom: 0, left: 15};
@@ -229,6 +242,7 @@ function buildParams () {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
+	params.scaleYAxis = false;
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -377,7 +391,6 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 };
 
 BuildWidget.prototype.buildLifeCycle = function() {
-	console.log("building that lifeCycle");
 	var self = this;
 
 	this.selectedCountryLabel = d3.select(this.params.selectedCountryTarget).text(this.params.selectedCountry);
@@ -402,10 +415,13 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.domain([1980, 2013]);
 
 	this.yScaleLifeCycle = d3.scale.linear()
-		.range([this.params.lifeCycleHeight, 0])
-		.domain([0, (1122285 * 1.1) ]);
-		// .domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
-		// 1122285
+		.range([this.params.lifeCycleHeight, 0]);
+
+	if ( this.params.scaleYAxis ) {
+		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
+	} else {
+		this.yScaleLifeCycle.domain([0, (1235000) ]);
+	}
 
 	this.xAxisLifeCycle = d3.svg.axis()
 		.scale(this.xScaleLifeCycle)
@@ -451,12 +467,15 @@ BuildWidget.prototype.buildLifeCycle = function() {
 
 BuildWidget.prototype.updateLifeCycle = function() {
 	var self = this;
-	console.log("updateLifeCycle");
 
 	this.selectedCountryLabel.text(this.params.selectedCountry);
 
 	if ( this.features[this.params.selectedFeature].values ) {
-		// this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
+		if ( this.params.scaleYAxis ) {
+			this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
+		} else {
+			this.yScaleLifeCycle.domain([0, (1235000) ]);
+		}
 
 		this.lifeCycleSvg.select(".y")
 			.transition()
@@ -564,6 +583,16 @@ BuildWidget.prototype.buildTooltip = function() {
 	this.tooltip.text(this.params.year);
 };
 
+BuildWidget.prototype.buildCheckbox = function() {
+	var self = this;
+	this.checkbox = d3.select(this.params.checkboxTarget);
+
+	this.checkbox.on("change", function() {
+		self.params.scaleYAxis = d3.select(this).property("checked");
+		self.pubsub.publish("newDataReady");
+	});
+};
+
 BuildWidget.prototype.updateMap = function() {
 	var self = this;
 
@@ -596,10 +625,8 @@ BuildWidget.prototype.countryChosen = function(topic, func, parent) {
 
 BuildWidget.prototype.dataReady = function(topic, func, parent) {
 	if ( this.parent.lifeCycleSvg ) {
-		console.log("We got an svg");
 		this.parent.updateLifeCycle();
 	} else {
-		console.log("We ain't got an svg");
 		this.parent.buildLifeCycle();
 	}
 
@@ -656,6 +683,7 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
 					measlesMap.buildTooltip();
+					measlesMap.buildCheckbox();
 					measlesMap.buildData(features[measlesMap.params.selectedFeature]);
 					// measlesMap.buildLifeCycle();
 
