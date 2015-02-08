@@ -3,7 +3,7 @@ BuildWidget.prototype.updateMap = function() {
 
 	var year = self.params.year.toString();
 
-	this.countriesSVG.selectAll("path")
+	this.countriesSvg.selectAll("path")
 		.attr("fill", function (d) {
 			if ( d.values ) {
 				if ( d.values[0][year] === "noData") {

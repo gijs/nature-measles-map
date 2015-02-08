@@ -7,8 +7,6 @@ BuildWidget.prototype.buildKey = function() {
 
 	quantiles.forEach(function(element) { extraQuantiles.push(element); } );
 
-	console.log(extraQuantiles);
-
 	this.key = d3.select(this.params.keyTarget);
 
 	this.key.append("h3").text(this.params.key.keyHead);

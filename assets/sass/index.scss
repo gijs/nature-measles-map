@@ -26,11 +26,12 @@
 		position: relative;
 		background-color: #DFF2FF;
 		line-height: 0;
+		margin: 0 15px;
 
 		h3 {
 			position: absolute;
 			margin: 0;
-			top: 20px;
+			top: 30px;
 			left: 15px;
 			z-index: 99;
 			font-size: 2em;
@@ -42,40 +43,51 @@
 		}
 	}
 
-	// SVG brush
+	// SVG Text
 	.axis {
 		font: 10px sans-serif;
 		user-select: none;
 	}
 
-	.axis .domain {
-		fill: none;
-		stroke: #000;
-		stroke-opacity: .3;
-		stroke-width: 10px;
-		stroke-linecap: round;
-	}
+	// SVG brush
+	.controls {
+		margin: 0 15px;
 
-	.axis .halo {
-		fill: none;
-		stroke: #ddd;
-		stroke-width: 8px;
-		stroke-linecap: round;
-	}
+		.axis .domain {
+			fill: none;
+			stroke: #000;
+			stroke-opacity: .3;
+			stroke-width: 10px;
+			stroke-linecap: round;
+		}
 
-	.slider .handle {
-		fill: #fff;
-		stroke: #000;
-		stroke-opacity: .5;
-		stroke-width: 1.25px;
-		cursor: crosshair;
+		.axis .halo {
+			fill: none;
+			stroke: #ddd;
+			stroke-width: 8px;
+			stroke-linecap: round;
+		}
+
+		.slider .handle {
+			fill: #fff;
+			stroke: #000;
+			stroke-opacity: .5;
+			stroke-width: 1.25px;
+			cursor: crosshair;
+		}
 	}
 
 	// Key
 
 	.key {
+		margin-bottom: 10px;
+
 		h3 {
 			padding: 10px 15px;
+			margin: 0;
+		}
+
+		ul {
 			margin: 0;
 		}
 
@@ -89,5 +101,38 @@
 		}
 	}
 
+	// Life cycle info box
+	// ===============================================
+	.info-box { 
+		background-color: #ececec;
+		margin: 0 15px 15px 15px;
+		clear: both;
+		
+		p {
+			padding: 15px;
+			margin: 0;
+		}
+
+		svg {
+			margin: 0 0 10px 0;
+		}
+
+		// Special cases for SVG styling
+		// ===============================================
+		.axis, .numbersGroup {
+			path, line {
+				fill: none;
+				stroke: #666;
+				// shape-rendering: crispEdges;
+			}
+
+			// text {
+			// 	font-family: sans-serif;
+			// 	fill: #666;
+			// 	font-size: 13px;
+			// 	shape-rendering: crispEdges;
+			// }
+		}
+	}
 } // outerwrapper
 

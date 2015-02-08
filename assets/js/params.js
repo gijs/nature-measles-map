@@ -8,7 +8,8 @@ function buildParams () {
 		lightGrey: "#999",
 		grey: "#666",
 		darkGrey: "#333",
-		noData: "#ccc"		
+		noData: "#ccc",
+		lineColour: "#0B7B0B"	
 	};
 
 	params.key = {
@@ -18,22 +19,34 @@ function buildParams () {
 		keyHead: "Cases of measles"
 	};
 
-	params.duration = 200;
+	/* Life cycle data */
+	params.selectedCountry = "United States of America (the)";
+	params.selectedID = "USA";
+	params.selectedData = [];
+	params.selectedMaxArray = [];
+	params.selectedFeature = 202;
 
 	/* Target ids */
 	params.mapTarget = "#chart";
 	params.brushTarget = "#year-slider";
 	params.keyTarget = "#measles-scale";
+	params.lifeCycleChartTarget = "#life-cycle-chart";
+	params.selectedCountryTarget = "#selected-country";
 
 	/*	Map margin, width and height */
-	params.mapMargin = {top: 0, right: 0, mid: 0, bottom: 0, left: 0};
+	params.mapMargin = {top: 0, right: 15, bottom: 0, left: 15};
 	params.mapWidth = contentWidth  - params.mapMargin.left - params.mapMargin.right;
 	params.mapHeight = (contentWidth * 0.5) - params.mapMargin.top - params.mapMargin.bottom;
 
 	/*	Brush margin, width and height */
-	params.brushMargin = {top: 0, right: 25, bottom: 0, left: 25};
-	params.brushWidth = contentWidth  - params.brushMargin.left - params.brushMargin.right;
+	params.brushMargin = {top: 0, right: 10, bottom: 0, left: 70};
+	params.brushWidth = contentWidth  - params.brushMargin.left - params.brushMargin.right - 30;
 	params.brushHeight = 50 - params.brushMargin.top - params.brushMargin.bottom;
+
+	/*	Lifecycle margin, width and height */
+	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
+	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
+	params.lifeCycleHeight = 100;
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -44,12 +57,12 @@ function buildParams () {
 
 	params.year = "1980";
 
+	params.duration = 200;
+
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.quantile()
 					.range(['rgb(255,255,178)','rgb(254,204,92)','rgb(253,141,60)','rgb(240,59,32)','rgb(189,0,38)'])
 					.domain(params.key.keyRange);
-
-	console.log(params.color.quantiles());
 
 	params.projection = d3.geo.mercator()
 						.scale(650)

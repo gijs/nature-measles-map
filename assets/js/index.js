@@ -40,11 +40,19 @@
 					var params = buildParams();
 
 					var measlesMap = new BuildWidget(params, features, world);
+					extendObject(measlesMap.pubsub);
+					/*	Create subscriptions */
+					measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
+					measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
+					measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
 
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
 					measlesMap.buildTooltip();
+					measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+					// measlesMap.buildLifeCycle();
+
 
 				});
 			});

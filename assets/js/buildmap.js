@@ -15,8 +15,8 @@ BuildWidget.prototype.buildMap = function() {
 
 	this.clipGroupSvg = this.svg.append("g").attr("clip-path", "url(#clip)");
 
-	this.countriesSVG = this.clipGroupSvg.append("g");
-	this.bordersSVG = this.clipGroupSvg.append("g");
+	this.countriesSvg = this.clipGroupSvg.append("g");
+	this.bordersSvg = this.clipGroupSvg.append("g");
 
 	this.svg.call(d3.behavior.zoom()
 			.translate([0, 0])
@@ -24,7 +24,7 @@ BuildWidget.prototype.buildMap = function() {
 			.scaleExtent([1, 8])
 			.on("zoom", zoomed));
 
-	this.countriesSVG.selectAll("path")
+	this.countriesSvg.selectAll("path")
 		.data(this.features)
 		.enter().append("path")
 		.attr("d", this.params.path)
@@ -40,19 +40,12 @@ BuildWidget.prototype.buildMap = function() {
 				return self.params.uiColour.noData;
 			}
 		})
-		.on("click", function (d) {
-			if ( d.values ) {
-				if ( d.values[0][self.params.year] === "noData") {
-					console.log(d.values[0].Cname +  ": No Data");
-				} else {
-					console.log(d.values[0].Cname + ": " + d.values[0][self.params.year] + " cases");
-				}
-			} else {
-				console.log(d.id + ": No Data");
-			}
+		.on("click", function (d,i) {
+			self.params.selectedFeature = i;
+			self.pubsub.publish("newCountryChosen");
 		});
 
-	this.bordersSVG.append("path")
+	this.bordersSvg.append("path")
 		.datum(topojson.mesh(self.world, self.world.objects.units, function(a, b) { return a !== b; }))
 		.attr("d", this.params.path)
 		.attr("class", "subunit-boundary")
@@ -62,7 +55,7 @@ BuildWidget.prototype.buildMap = function() {
 
 	function zoomed() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		self.countriesSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		self.bordersSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+		self.bordersSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 	}
 };

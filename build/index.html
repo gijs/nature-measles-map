@@ -72,11 +72,12 @@
   position: relative;
   background-color: #DFF2FF;
   line-height: 0;
+  margin: 0 15px;
 }
 .outerwrapper .chart h3 {
   position: absolute;
   margin: 0;
-  top: 20px;
+  top: 30px;
   left: 15px;
   z-index: 99;
   font-size: 2em;
@@ -95,28 +96,37 @@
       -ms-user-select: none;
           user-select: none;
 }
-.outerwrapper .axis .domain {
+.outerwrapper .controls {
+  margin: 0 15px;
+}
+.outerwrapper .controls .axis .domain {
   fill: none;
   stroke: #000;
   stroke-opacity: .3;
   stroke-width: 10px;
   stroke-linecap: round;
 }
-.outerwrapper .axis .halo {
+.outerwrapper .controls .axis .halo {
   fill: none;
   stroke: #ddd;
   stroke-width: 8px;
   stroke-linecap: round;
 }
-.outerwrapper .slider .handle {
+.outerwrapper .controls .slider .handle {
   fill: #fff;
   stroke: #000;
   stroke-opacity: .5;
   stroke-width: 1.25px;
   cursor: crosshair;
 }
+.outerwrapper .key {
+  margin-bottom: 10px;
+}
 .outerwrapper .key h3 {
   padding: 10px 15px;
+  margin: 0;
+}
+.outerwrapper .key ul {
   margin: 0;
 }
 .outerwrapper .key li {
@@ -127,6 +137,22 @@
   border-left-width: 15px;
   line-height: 1em;
 }
+.outerwrapper .info-box {
+  background-color: #ececec;
+  margin: 0 15px 15px 15px;
+  clear: both;
+}
+.outerwrapper .info-box p {
+  padding: 15px;
+  margin: 0;
+}
+.outerwrapper .info-box svg {
+  margin: 0 0 10px 0;
+}
+.outerwrapper .info-box .axis path, .outerwrapper .info-box .axis line, .outerwrapper .info-box .numbersGroup path, .outerwrapper .info-box .numbersGroup line {
+  fill: none;
+  stroke: #666;
+}
 
 </style>
 <div class="outerwrapper">
@@ -134,24 +160,75 @@
 		<h2>Headline</h2>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur molestiae voluptas deleniti, velit a, culpa reprehenderit eaque aut repellendus. Hic vero voluptates magni voluptas perspiciatis quos, exercitationem suscipit reiciendis rem.</p>
 	</div>
+	
+	<div class="key" id="measles-scale"></div>
 
+	<div id="chart" class="chart"></div>
+	
 	<div class="controls" id="year-slider"></div>
 
-	<div id="chart" class="chart">
-		<!-- <h3>Year</h3> -->
-	</div>
-
-	<div class="key" id="measles-scale">
+	<div class="info-box" id="info-box">
 		
+		<p class="country" id="selected-country"></p>
+		
+		<div class="life-cycle-chart" id="life-cycle-chart"></div>
 	</div>
 </div>
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">
+function extendObject (myObject) {
+	/*	Referenced from: http://addyosmani.com/resources/essentialjsdesignpatterns/book/#observerpatternjavascript */
+	
+	/*	Storage for topics that can be broadcast or listened to */
+	var topics = {};
+
+	/*	A topic identifyer */
+	var subUid = -1;
+
+	/*	Publish or broadcast events of interest
+		with a specific topic name and arguments
+		such as the data to pass along */
+	myObject.publish = function ( topic, args ) {
+		
+		if ( !topics[topic] ) {
+			return false;
+		}
+
+		var subscribers = topics[topic];
+		var len = subscribers ? subscribers.length : 0;
+
+		while (len--) {
+			subscribers[len].func( topic, args );
+		}	
+
+		return this;
+	};
+
+	/*	Subscribe to events of interest with a specific topic name and a 
+		callback function, to be executed with the topic/event is observed */
+	myObject.subscribe = function ( topic, func, parent ) {
+		
+		if ( !topics[topic] ) {
+			topics[topic] = [];
+		}
+
+		var token = ( ++subUid ).toString();
+		topics[topic].push({
+			token: token,
+			func: func,
+			parent: parent
+		});
+		return token;
+	};
+
+}
 function BuildWidget (params, features, world) {
 	this.params = params;
 	this.features = features;
 	this.world = world;
+	this.pubsub = {};
 }
+
 function buildParams () {
 	var params = {};
 
@@ -162,7 +239,8 @@ function buildParams () {
 		lightGrey: "#999",
 		grey: "#666",
 		darkGrey: "#333",
-		noData: "#ccc"		
+		noData: "#ccc",
+		lineColour: "#0B7B0B"	
 	};
 
 	params.key = {
@@ -172,22 +250,34 @@ function buildParams () {
 		keyHead: "Cases of measles"
 	};
 
-	params.duration = 200;
+	/* Life cycle data */
+	params.selectedCountry = "United States of America (the)";
+	params.selectedID = "USA";
+	params.selectedData = [];
+	params.selectedMaxArray = [];
+	params.selectedFeature = 202;
 
 	/* Target ids */
 	params.mapTarget = "#chart";
 	params.brushTarget = "#year-slider";
 	params.keyTarget = "#measles-scale";
+	params.lifeCycleChartTarget = "#life-cycle-chart";
+	params.selectedCountryTarget = "#selected-country";
 
 	/*	Map margin, width and height */
-	params.mapMargin = {top: 0, right: 0, mid: 0, bottom: 0, left: 0};
+	params.mapMargin = {top: 0, right: 15, bottom: 0, left: 15};
 	params.mapWidth = contentWidth  - params.mapMargin.left - params.mapMargin.right;
 	params.mapHeight = (contentWidth * 0.5) - params.mapMargin.top - params.mapMargin.bottom;
 
 	/*	Brush margin, width and height */
-	params.brushMargin = {top: 0, right: 25, bottom: 0, left: 25};
-	params.brushWidth = contentWidth  - params.brushMargin.left - params.brushMargin.right;
+	params.brushMargin = {top: 0, right: 10, bottom: 0, left: 70};
+	params.brushWidth = contentWidth  - params.brushMargin.left - params.brushMargin.right - 30;
 	params.brushHeight = 50 - params.brushMargin.top - params.brushMargin.bottom;
+
+	/*	Lifecycle margin, width and height */
+	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
+	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
+	params.lifeCycleHeight = 100;
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -198,12 +288,12 @@ function buildParams () {
 
 	params.year = "1980";
 
+	params.duration = 200;
+
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.quantile()
 					.range(['rgb(255,255,178)','rgb(254,204,92)','rgb(253,141,60)','rgb(240,59,32)','rgb(189,0,38)'])
 					.domain(params.key.keyRange);
-
-	console.log(params.color.quantiles());
 
 	params.projection = d3.geo.mercator()
 						.scale(650)
@@ -231,8 +321,8 @@ BuildWidget.prototype.buildMap = function() {
 
 	this.clipGroupSvg = this.svg.append("g").attr("clip-path", "url(#clip)");
 
-	this.countriesSVG = this.clipGroupSvg.append("g");
-	this.bordersSVG = this.clipGroupSvg.append("g");
+	this.countriesSvg = this.clipGroupSvg.append("g");
+	this.bordersSvg = this.clipGroupSvg.append("g");
 
 	this.svg.call(d3.behavior.zoom()
 			.translate([0, 0])
@@ -240,7 +330,7 @@ BuildWidget.prototype.buildMap = function() {
 			.scaleExtent([1, 8])
 			.on("zoom", zoomed));
 
-	this.countriesSVG.selectAll("path")
+	this.countriesSvg.selectAll("path")
 		.data(this.features)
 		.enter().append("path")
 		.attr("d", this.params.path)
@@ -256,19 +346,12 @@ BuildWidget.prototype.buildMap = function() {
 				return self.params.uiColour.noData;
 			}
 		})
-		.on("click", function (d) {
-			if ( d.values ) {
-				if ( d.values[0][self.params.year] === "noData") {
-					console.log(d.values[0].Cname +  ": No Data");
-				} else {
-					console.log(d.values[0].Cname + ": " + d.values[0][self.params.year] + " cases");
-				}
-			} else {
-				console.log(d.id + ": No Data");
-			}
+		.on("click", function (d,i) {
+			self.params.selectedFeature = i;
+			self.pubsub.publish("newCountryChosen");
 		});
 
-	this.bordersSVG.append("path")
+	this.bordersSvg.append("path")
 		.datum(topojson.mesh(self.world, self.world.objects.units, function(a, b) { return a !== b; }))
 		.attr("d", this.params.path)
 		.attr("class", "subunit-boundary")
@@ -278,8 +361,8 @@ BuildWidget.prototype.buildMap = function() {
 
 	function zoomed() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		self.countriesSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-		self.bordersSVG.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+		self.bordersSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 	}
 };
 
@@ -338,11 +421,149 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 		/* should probably snap to a value */
 		self.params.year = Math.floor(value);
-		self.updateMap();
+		self.pubsub.publish("newYearChosen");
 	}
 };
 
-// function buildData () {}
+BuildWidget.prototype.buildLifeCycle = function() {
+	console.log("building that lifeCycle");
+	var self = this;
+
+	this.selectedCountryLabel = d3.select(this.params.selectedCountryTarget).text(this.params.selectedCountry);
+
+	this.lifeCycleSvg = d3.select(this.params.lifeCycleChartTarget).append("svg")
+		.attr("width", this.params.lifeCycleWidth + this.params.lifeCycleMargin.left + this.params.lifeCycleMargin.right)
+		.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom)
+	  .append("g")
+		.attr("transform", "translate(" + this.params.lifeCycleMargin.left + "," + this.params.lifeCycleMargin.top + ")");
+
+	this.lifeCycleSvg.append("g")
+		.attr("class","white-box")
+	  .append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", this.params.lifeCycleWidth)
+		.attr("height", this.params.lifeCycleHeight)
+		.attr("fill","#FFF");
+
+	this.xScaleLifeCycle = d3.scale.linear()
+		.range([0, this.params.lifeCycleWidth])
+		.domain([1980, 2013]);
+
+	this.yScaleLifeCycle = d3.scale.linear()
+		.range([this.params.lifeCycleHeight, 0])
+		.domain([0, (1122285 * 1.1) ]);
+		// .domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
+		// 1122285
+
+	this.xAxisLifeCycle = d3.svg.axis()
+		.scale(this.xScaleLifeCycle)
+		.tickFormat(function(d) { return d; })
+		.ticks(20)
+		.orient("bottom");
+
+	this.yAxisLifeCycle = d3.svg.axis()
+		.scale(this.yScaleLifeCycle)
+		.ticks(5)
+		.tickSize(-this.params.lifeCycleWidth, 0)
+		.orient("left");
+
+	this.line = d3.svg.line()
+		.x(function(d) { return self.xScaleLifeCycle(d.date); })
+		.y(function(d) { return self.yScaleLifeCycle(d.cases); });
+
+	this.lifeCycleSvg.append("g")
+	    .attr("class", "x axis")
+	    .attr("transform", "translate(0," + this.params.lifeCycleHeight + ")")
+	    .call(this.xAxisLifeCycle);
+
+	this.lifeCycleSvg.append("g")
+	    .attr("class", "y axis")
+	    .call(this.yAxisLifeCycle)
+	  .append("text")
+	    .attr("transform", "translate(" + -(this.params.lifeCycleMargin.left * 0.9) + "," + (this.params.lifeCycleHeight/2) + "), rotate(-90)")
+	    .attr("y", 6)
+	    .attr("dy", ".5em")
+	    .style("text-anchor", "middle")
+	    .text(this.params.key.keyHead);
+
+	this.lifeCycleSvg.append("path")
+		.data([this.params.selectedData, function (d) {
+			return d.date;
+		}])
+		.attr("class","line")
+		.attr("fill", "none")
+		.attr("stroke", this.params.uiColour.lineColour)
+		.attr("stroke-width", "3px")
+		.attr("d", this.line);
+};
+
+BuildWidget.prototype.updateLifeCycle = function() {
+	var self = this;
+	console.log("updateLifeCycle");
+
+	this.selectedCountryLabel.text(this.params.selectedCountry);
+
+	if ( this.features[this.params.selectedFeature].values ) {
+		// this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
+
+		this.lifeCycleSvg.select(".y")
+			.transition()
+			.duration(this.params.duration)
+			.call(this.yAxisLifeCycle);
+			
+		this.lifeCycleSvg.select("path.line")
+			.data([this.params.selectedData, function (d) {
+				return d.date;
+			}])
+			.attr("d", this.line);
+	}
+
+};
+
+BuildWidget.prototype.buildData = function() {
+	this.params.selectedID = this.features[this.params.selectedFeature].id;
+
+	/*	Remove all the old objects from the arrays */
+	while ( this.params.selectedData.length > 0 ) {
+		this.params.selectedData.pop();
+	}
+
+	while ( this.params.selectedMaxArray.length > 0 ) {
+		this.params.selectedMaxArray.pop();
+	}
+
+	if ( this.features[this.params.selectedFeature].values ) {
+		this.params.selectedCountry = this.features[this.params.selectedFeature].values[0].Cname;
+		
+		for (var i = 1980; i < 2014; i++) {
+			if ( this.features[this.params.selectedFeature].values[0][i] !== "noData" ) {
+				var myObject = {};
+				myObject.date = i; 
+				myObject.cases = this.features[this.params.selectedFeature].values[0][i];
+				this.params.selectedData.push(myObject);
+			}
+		}
+
+		this.pubsub.publish("newDataReady");
+	}
+
+
+	// console.log(this.params.selectedCountry);
+	// console.log(this.params.selectedID);
+	// console.table(this.params.selectedData);
+
+	// if ( d.values ) {
+	// 	if ( d.values[0][self.params.year] === "noData") {
+	// 		console.log(d.values[0].Cname +  ": No Data");
+	// 	} else {
+	// 		console.log(d.values[0].ISO_code);
+	// 		// console.log(d.values[0].Cname + ": " + d.values[0][self.params.year] + " cases");
+	// 	}
+	// } else {
+	// 	console.log(d.id + ": No Data");
+	// }
+};
 
 BuildWidget.prototype.buildKey = function() {
 	var self = this;
@@ -352,8 +573,6 @@ BuildWidget.prototype.buildKey = function() {
 	var extraQuantiles = [0];
 
 	quantiles.forEach(function(element) { extraQuantiles.push(element); } );
-
-	console.log(extraQuantiles);
 
 	this.key = d3.select(this.params.keyTarget);
 
@@ -399,7 +618,7 @@ BuildWidget.prototype.updateMap = function() {
 
 	var year = self.params.year.toString();
 
-	this.countriesSVG.selectAll("path")
+	this.countriesSvg.selectAll("path")
 		.attr("fill", function (d) {
 			if ( d.values ) {
 				if ( d.values[0][year] === "noData") {
@@ -416,6 +635,24 @@ BuildWidget.prototype.updateMap = function() {
 	this.tooltip.text(year);
 };
 
+BuildWidget.prototype.yearChosen = function (topic, func, parent) {
+	this.parent.updateMap();
+};
+
+BuildWidget.prototype.countryChosen = function(topic, func, parent) {
+	this.parent.buildData();
+};
+
+BuildWidget.prototype.dataReady = function(topic, func, parent) {
+	if ( this.parent.lifeCycleSvg ) {
+		console.log("We got an svg");
+		this.parent.updateLifeCycle();
+	} else {
+		console.log("We ain't got an svg");
+		this.parent.buildLifeCycle();
+	}
+
+};
 (function() {
 	var init = function($) {
 
@@ -458,11 +695,19 @@ BuildWidget.prototype.updateMap = function() {
 					var params = buildParams();
 
 					var measlesMap = new BuildWidget(params, features, world);
+					extendObject(measlesMap.pubsub);
+					/*	Create subscriptions */
+					measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
+					measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
+					measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
 
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
 					measlesMap.buildTooltip();
+					measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+					// measlesMap.buildLifeCycle();
+
 
 				});
 			});

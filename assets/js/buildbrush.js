@@ -53,6 +53,6 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 		/* should probably snap to a value */
 		self.params.year = Math.floor(value);
-		self.updateMap();
+		self.pubsub.publish("newYearChosen");
 	}
 };
