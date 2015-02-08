@@ -17,5 +17,5 @@ BuildWidget.prototype.updateMap = function() {
 			}
 		});
 
-	this.tooltip.text(year);
+	this.yearLabel.text(year);
 };

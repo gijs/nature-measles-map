@@ -90,5 +90,4 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("stroke-width",'2px')
 		.attr("stroke",this.params.uiColour.lineColour);
 
-
 };

@@ -95,8 +95,11 @@
   margin: 0 15px 15px 15px;
   clear: both;
 }
+.outerwrapper .info-box .life-cycle-chart {
+  position: relative;
+}
 .outerwrapper .info-box .life-cycle-header {
-  padding: 15px;
+  padding: 15px 15px 5px;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -110,6 +113,30 @@
 }
 .outerwrapper .info-box svg {
   margin: 0 0 10px 0;
+}
+.outerwrapper .info-box .widget-tooltip {
+  position: absolute;
+  height: auto;
+  padding: 6px 10px 6px 15px;
+  color: #ccc;
+  background-color: #333;
+  pointer-events: none;
+  border-radius: 5px;
+  font-size: 0.8em;
+  line-height: 1.4em;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+.outerwrapper .info-box .widget-tooltip p {
+  padding: 0;
+}
+.outerwrapper .info-box .widget-tooltip span {
+  font-weight: bold;
+  color: #fff;
+}
+.outerwrapper .info-box .hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 .outerwrapper .info-box .axis path, .outerwrapper .info-box .axis line, .outerwrapper .info-box .numbersGroup path, .outerwrapper .info-box .numbersGroup line {
   fill: none;

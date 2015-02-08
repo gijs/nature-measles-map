@@ -49,9 +49,9 @@
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
-					measlesMap.buildTooltip();
 					measlesMap.buildCheckbox();
 					measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+					measlesMap.buildTooltip();
 					// measlesMap.buildLifeCycle();
 
 

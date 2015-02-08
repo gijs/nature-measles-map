@@ -54,6 +54,8 @@ BuildWidget.prototype.updateLifeCycle = function() {
 			.attr("fill", this.params.uiColour.veryLightGrey)
 			.attr("stroke-width",'2px')
 			.attr("stroke",this.params.uiColour.lineColour);
+
+		this.buildTooltip();
 	}
 };
  

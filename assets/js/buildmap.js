@@ -53,6 +53,10 @@ BuildWidget.prototype.buildMap = function() {
 		.attr("stroke", "#666")
 		.attr("stroke-width", "0.1px");
 
+	this.yearLabel = d3.select(this.params.mapTarget).append("h3");
+
+	this.yearLabel.text(this.params.year);
+
 	function zoomed() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");

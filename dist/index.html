@@ -96,8 +96,11 @@
   margin: 0 15px 15px 15px;
   clear: both;
 }
+.outerwrapper .info-box .life-cycle-chart {
+  position: relative;
+}
 .outerwrapper .info-box .life-cycle-header {
-  padding: 15px;
+  padding: 15px 15px 5px;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -111,6 +114,30 @@
 }
 .outerwrapper .info-box svg {
   margin: 0 0 10px 0;
+}
+.outerwrapper .info-box .widget-tooltip {
+  position: absolute;
+  height: auto;
+  padding: 6px 10px 6px 15px;
+  color: #ccc;
+  background-color: #333;
+  pointer-events: none;
+  border-radius: 5px;
+  font-size: 0.8em;
+  line-height: 1.4em;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+.outerwrapper .info-box .widget-tooltip p {
+  padding: 0;
+}
+.outerwrapper .info-box .widget-tooltip span {
+  font-weight: bold;
+  color: #fff;
+}
+.outerwrapper .info-box .hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 .outerwrapper .info-box .axis path, .outerwrapper .info-box .axis line, .outerwrapper .info-box .numbersGroup path, .outerwrapper .info-box .numbersGroup line {
   fill: none;
@@ -137,7 +164,11 @@
 			<label>Scale y axis: <input id="scale-y-axis" type="checkbox"></label>
 		</div>
 		
-		<div class="life-cycle-chart" id="life-cycle-chart"></div>
+		<div class="life-cycle-chart" id="life-cycle-chart">
+			<div class="widget-tooltip hidden" id="widget-tooltip">
+				<p id="circle-cases">Hello!</p>
+			</div>
+		</div>
 	</div>
 </div>
 <!--[if gt IE 8]><!-->
@@ -327,6 +358,10 @@ BuildWidget.prototype.buildMap = function() {
 		.attr("stroke", "#666")
 		.attr("stroke-width", "0.1px");
 
+	this.yearLabel = d3.select(this.params.mapTarget).append("h3");
+
+	this.yearLabel.text(this.params.year);
+
 	function zoomed() {
 		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
@@ -485,7 +520,6 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("stroke-width",'2px')
 		.attr("stroke",this.params.uiColour.lineColour);
 
-
 };
 
 BuildWidget.prototype.updateLifeCycle = function() {
@@ -544,6 +578,8 @@ BuildWidget.prototype.updateLifeCycle = function() {
 			.attr("fill", this.params.uiColour.veryLightGrey)
 			.attr("stroke-width",'2px')
 			.attr("stroke",this.params.uiColour.lineColour);
+
+		this.buildTooltip();
 	}
 };
  
@@ -633,12 +669,37 @@ BuildWidget.prototype.buildKey = function() {
 
 
 // buildScales.js
-BuildWidget.prototype.buildTooltip = function() {
-	this.tooltip = d3.select(this.params.mapTarget).append("h3");
+BuildWidget.prototype.buildTooltip = function (selection) {
+	var self = this;
 
-	this.tooltip.text(this.params.year);
+	this.lifeCycleCircles.selectAll("circle")
+		.on("mouseover", function (d) {
+			var myCircle = d3.select(this);
+
+			d3.select("#circle-cases").text(self.params.format(d.cases) + " cases");
+
+			var tooltipWidth = parseInt(d3.select("#widget-tooltip").style("padding-left"),10) + parseInt(d3.select("#widget-tooltip").style("width"),10) + parseInt(d3.select("#widget-tooltip").style("padding-right"),10);
+
+			var top = (parseFloat(myCircle.attr("cy")) + self.params.lifeCycleMargin.top);
+			var left = (parseFloat(myCircle.attr("cx")) + self.params.lifeCycleMargin.left);
+
+			if ( parseFloat(myCircle.attr("cx")) > (self.params.lifeCycleWidth / 2) ) {
+				left -= tooltipWidth;
+			}
+
+			d3.select("#widget-tooltip")
+				.style("top",  top + "px")
+				.style("left", left + "px")
+				.classed("hidden", false);
+
+		}).on("mouseout", function () {
+			self.hideTooltip();
+		});
 };
 
+BuildWidget.prototype.hideTooltip = function () {
+	d3.select("#widget-tooltip").classed("hidden", true);
+};
 BuildWidget.prototype.buildCheckbox = function() {
 	var self = this;
 	this.checkbox = d3.select(this.params.checkboxTarget);
@@ -668,7 +729,7 @@ BuildWidget.prototype.updateMap = function() {
 			}
 		});
 
-	this.tooltip.text(year);
+	this.yearLabel.text(year);
 };
 
 BuildWidget.prototype.yearChosen = function (topic, func, parent) {
@@ -738,9 +799,9 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 					measlesMap.buildMap();
 					measlesMap.buildBrush();
 					measlesMap.buildKey();
-					measlesMap.buildTooltip();
 					measlesMap.buildCheckbox();
 					measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+					measlesMap.buildTooltip();
 					// measlesMap.buildLifeCycle();
 
 

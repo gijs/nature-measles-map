@@ -111,9 +111,13 @@
 		background-color: #ececec;
 		margin: 0 15px 15px 15px;
 		clear: both;
+
+		.life-cycle-chart {
+			position: relative;
+		}
 		
 		.life-cycle-header {
-			padding: 15px;
+			padding: 15px 15px 5px;
 			display: flex;
 			justify-content: space-between;
 		}
@@ -127,6 +131,36 @@
 			margin: 0 0 10px 0;
 		}
 
+		.widget-tooltip {
+			position: absolute;
+			// width: 200px;
+			height: auto;
+			padding: 6px 10px 6px 15px;
+			color: #ccc;
+			background-color: #333;
+			pointer-events: none;
+			border-radius:5px;
+			font-size: 0.8em;
+			line-height: 1.4em;
+			opacity: 1;
+			-webkit-transition: opacity 0.2s ease;
+			transition: opacity 0.2s ease;
+
+			p {
+				padding: 0;
+			}
+
+			span {
+				font-weight: bold;
+				color: #fff;
+			}
+		}
+
+		.hidden {
+			opacity: 0;
+			pointer-events: none;
+		}
+
 		// Special cases for SVG styling
 		// ===============================================
 		.axis, .numbersGroup {
@@ -135,13 +169,6 @@
 				stroke: #666;
 				// shape-rendering: crispEdges;
 			}
-
-			// text {
-			// 	font-family: sans-serif;
-			// 	fill: #666;
-			// 	font-size: 13px;
-			// 	shape-rendering: crispEdges;
-			// }
 		}
 	}
 } // outerwrapper
