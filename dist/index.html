@@ -21,7 +21,7 @@
 }
 .outerwrapper .chart {
   position: relative;
-  background-color: #DFF2FF;
+  background-color: #65A6D3;
   line-height: 0;
   margin: 0 15px;
 }
@@ -361,9 +361,8 @@ BuildWidget.prototype.buildMap = function() {
 	this.yearLabel = d3.select(this.params.mapTarget).append("h3");
 
 	this.yearLabel.text(this.params.year);
-
+	
 	function zoomed() {
-		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.bordersSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 	}
@@ -752,6 +751,7 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 	var init = function($) {
 
 		$.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
+		// $.when( $.getScript("http://d3js.org/d3.v3.min.js"),
 				$.getScript("http://d3js.org/topojson.v1.min.js")
 		).then( function () {
 

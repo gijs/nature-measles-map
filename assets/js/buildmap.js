@@ -56,9 +56,8 @@ BuildWidget.prototype.buildMap = function() {
 	this.yearLabel = d3.select(this.params.mapTarget).append("h3");
 
 	this.yearLabel.text(this.params.year);
-
+	
 	function zoomed() {
-		self.svg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.bordersSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 	}
