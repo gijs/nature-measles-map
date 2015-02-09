@@ -69,7 +69,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("class","line")
 		.attr("fill", "none")
 		.attr("stroke", this.params.uiColour.lineColour)
-		.attr("stroke-width", "3px")
+		.attr("stroke-width", self.params.lifeCycleRadius)
 		.attr("d", this.line);
 
 	this.lifeCycleCircles = this.lifeCycleSvg.append("g");
@@ -85,7 +85,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("cy", function(d) {
 			return self.yScaleLifeCycle(d.cases);
 		})
-		.attr("r", "3px")
+		.attr("r", "4px")
 		.attr("fill", this.params.uiColour.veryLightGrey)
 		.attr("stroke-width",'2px')
 		.attr("stroke",this.params.uiColour.lineColour);

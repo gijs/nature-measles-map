@@ -50,7 +50,7 @@ BuildWidget.prototype.updateLifeCycle = function() {
 			.attr("cy", function(d) {
 				return self.yScaleLifeCycle(d.cases);
 			})
-			.attr("r", "3px")
+			.attr("r", self.params.lifeCycleRadius)
 			.attr("fill", this.params.uiColour.veryLightGrey)
 			.attr("stroke-width",'2px')
 			.attr("stroke",this.params.uiColour.lineColour);

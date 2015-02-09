@@ -13,7 +13,7 @@ function buildParams () {
 	};
 
 	params.key = {
-		keyRange: [25000, 50000, 75000, 100000, 125000],
+		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
 		keyHead: "Cases of measles"
@@ -49,6 +49,7 @@ function buildParams () {
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
 	params.scaleYAxis = false;
+	params.lifeCycleRadius = "4px";
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -62,9 +63,10 @@ function buildParams () {
 	params.duration = 100;
 
 	/* Max value is 1122285 -> from Excel */
-	params.color = d3.scale.quantile()
-					.range(['rgb(255,255,178)','rgb(254,204,92)','rgb(253,141,60)','rgb(240,59,32)','rgb(189,0,38)'])
-					.domain(params.key.keyRange);
+	params.color = d3.scale.linear()
+					.range(["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d","#000000"])
+					.domain(params.key.keyRange)
+					.clamp(true);
 
 	params.projection = d3.geo.mercator()
 						.scale(650)

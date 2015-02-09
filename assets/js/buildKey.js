@@ -1,12 +1,6 @@
 BuildWidget.prototype.buildKey = function() {
 	var self = this;
 
-	var quantiles = self.params.color.quantiles();
-
-	var extraQuantiles = [0];
-
-	quantiles.forEach(function(element) { extraQuantiles.push(element); } );
-
 	this.key = d3.select(this.params.keyTarget);
 
 	this.key.append("h3").text(this.params.key.keyHead);
@@ -14,25 +8,23 @@ BuildWidget.prototype.buildKey = function() {
 	this.list = this.key.append("ul");
 
 	this.list.selectAll("li")
-			.data(extraQuantiles)
+			.data(this.params.key.keyRange)
 			.enter()
 		  .append("li")
 			.text(function (d,i) {
-				var thisValue = self.params.format(d);
-				var nextValue = self.params.format( extraQuantiles[i+1] -1 );
-
-				if (i === (extraQuantiles.length - 1) ) {
-					return "≥ " + thisValue;
+				if (i === (self.params.key.keyRange.length - 1) ) {
+					return "≥ " + self.params.format(d);
+				} else if (i === 0) {
+					return "≤ " + self.params.format(d);
 				} else {
-					return thisValue + " - " + nextValue;
+					return self.params.format(d);
 				}
-
 			})
-			.style("border-left-color", function (d) {
+			.style("border-top-color", function (d) {
 				return self.params.color(d);
 			});
 		  
 	this.list.append("li")
 		.text("No data")
-		.style("border-left-color", self.params.uiColour.noData);
+		.style("border-top-color", self.params.uiColour.noData);
 };

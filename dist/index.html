@@ -86,15 +86,20 @@
   margin: 0;
 }
 .outerwrapper .key ul {
-  margin: 0;
+  margin: 0px 15px 0px 5px;
 }
 .outerwrapper .key li {
   display: inline-block;
-  margin-left: 15px;
+  margin-top: 5px;
+  margin-left: 10px;
   padding-left: 5px;
-  border-left-style: solid;
-  border-left-width: 15px;
+  padding-top: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 10px;
   line-height: 1em;
+  border-left: 1px solid black;
+  min-width: 60px;
 }
 .outerwrapper .info-box {
   background-color: #ececec;
@@ -254,7 +259,7 @@ function buildParams () {
 	};
 
 	params.key = {
-		keyRange: [25000, 50000, 75000, 100000, 125000],
+		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
 		keyHead: "Cases of measles"
@@ -290,6 +295,7 @@ function buildParams () {
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
 	params.scaleYAxis = false;
+	params.lifeCycleRadius = "4px";
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -303,9 +309,10 @@ function buildParams () {
 	params.duration = 100;
 
 	/* Max value is 1122285 -> from Excel */
-	params.color = d3.scale.quantile()
-					.range(['rgb(255,255,178)','rgb(254,204,92)','rgb(253,141,60)','rgb(240,59,32)','rgb(189,0,38)'])
-					.domain(params.key.keyRange);
+	params.color = d3.scale.linear()
+					.range(["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d","#000000"])
+					.domain(params.key.keyRange)
+					.clamp(true);
 
 	params.projection = d3.geo.mercator()
 						.scale(650)
@@ -512,7 +519,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("class","line")
 		.attr("fill", "none")
 		.attr("stroke", this.params.uiColour.lineColour)
-		.attr("stroke-width", "3px")
+		.attr("stroke-width", self.params.lifeCycleRadius)
 		.attr("d", this.line);
 
 	this.lifeCycleCircles = this.lifeCycleSvg.append("g");
@@ -528,7 +535,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("cy", function(d) {
 			return self.yScaleLifeCycle(d.cases);
 		})
-		.attr("r", "3px")
+		.attr("r", "4px")
 		.attr("fill", this.params.uiColour.veryLightGrey)
 		.attr("stroke-width",'2px')
 		.attr("stroke",this.params.uiColour.lineColour);
@@ -587,7 +594,7 @@ BuildWidget.prototype.updateLifeCycle = function() {
 			.attr("cy", function(d) {
 				return self.yScaleLifeCycle(d.cases);
 			})
-			.attr("r", "3px")
+			.attr("r", self.params.lifeCycleRadius)
 			.attr("fill", this.params.uiColour.veryLightGrey)
 			.attr("stroke-width",'2px')
 			.attr("stroke",this.params.uiColour.lineColour);
@@ -627,12 +634,6 @@ BuildWidget.prototype.buildData = function() {
 BuildWidget.prototype.buildKey = function() {
 	var self = this;
 
-	var quantiles = self.params.color.quantiles();
-
-	var extraQuantiles = [0];
-
-	quantiles.forEach(function(element) { extraQuantiles.push(element); } );
-
 	this.key = d3.select(this.params.keyTarget);
 
 	this.key.append("h3").text(this.params.key.keyHead);
@@ -640,27 +641,25 @@ BuildWidget.prototype.buildKey = function() {
 	this.list = this.key.append("ul");
 
 	this.list.selectAll("li")
-			.data(extraQuantiles)
+			.data(this.params.key.keyRange)
 			.enter()
 		  .append("li")
 			.text(function (d,i) {
-				var thisValue = self.params.format(d);
-				var nextValue = self.params.format( extraQuantiles[i+1] -1 );
-
-				if (i === (extraQuantiles.length - 1) ) {
-					return "≥ " + thisValue;
+				if (i === (self.params.key.keyRange.length - 1) ) {
+					return "≥ " + self.params.format(d);
+				} else if (i === 0) {
+					return "≤ " + self.params.format(d);
 				} else {
-					return thisValue + " - " + nextValue;
+					return self.params.format(d);
 				}
-
 			})
-			.style("border-left-color", function (d) {
+			.style("border-top-color", function (d) {
 				return self.params.color(d);
 			});
 		  
 	this.list.append("li")
 		.text("No data")
-		.style("border-left-color", self.params.uiColour.noData);
+		.style("border-top-color", self.params.uiColour.noData);
 };
 
 BuildWidget.prototype.buildTooltip = function (selection) {
