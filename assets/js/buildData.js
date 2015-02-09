@@ -42,5 +42,4 @@ BuildWidget.prototype.buildData = function() {
 	}
 
 	this.pubsub.publish("newDataReady");
-	console.log(this.features[this.params.selectedFeature]);
 };

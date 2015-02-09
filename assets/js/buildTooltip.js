@@ -27,7 +27,6 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 
 	this.vaccinationCircles.selectAll("circle")
 		.on("mouseover", function (d) {
-			console.log("ouch!");
 			var myCircle = d3.select(this);
 
 			d3.select("#circle-vaccination").text(self.params.format(d.rate) + " %");

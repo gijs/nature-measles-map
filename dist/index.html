@@ -258,11 +258,13 @@ function buildParams () {
 	params.mapScale = 100;
 	params.ticks = 20;
 	params.lifeCycleRadius = "4px";
+	params.mapRatio = 0.5;
 
 	if ( contentWidth < 310 ) {
 		params.mapScale = 50;
 		params.ticks = 5;
 		params.lifeCycleRadius = "2px";
+		params.mapRatio = 0.8;
 	}
 
 	params.uiColour = {
@@ -303,7 +305,7 @@ function buildParams () {
 	/*	Map margin, width and height */
 	params.mapMargin = {top: 0, right: 15, bottom: 0, left: 15};
 	params.mapWidth = contentWidth  - params.mapMargin.left - params.mapMargin.right;
-	params.mapHeight = (contentWidth * 0.5) - params.mapMargin.top - params.mapMargin.bottom;
+	params.mapHeight = (contentWidth * params.mapRatio) - params.mapMargin.top - params.mapMargin.bottom;
 
 	/*	Brush margin, width and height */
 	params.brushMargin = {top: 0, right: 10, bottom: 0, left: 70};
@@ -806,7 +808,6 @@ BuildWidget.prototype.buildData = function() {
 	}
 
 	this.pubsub.publish("newDataReady");
-	console.log(this.features[this.params.selectedFeature]);
 };
 
 BuildWidget.prototype.buildKey = function() {
@@ -869,7 +870,6 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 
 	this.vaccinationCircles.selectAll("circle")
 		.on("mouseover", function (d) {
-			console.log("ouch!");
 			var myCircle = d3.select(this);
 
 			d3.select("#circle-vaccination").text(self.params.format(d.rate) + " %");
