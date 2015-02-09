@@ -155,7 +155,7 @@
   margin: 0 15px 15px 15px;
   clear: both;
 }
-.outerwrapper .info-box .life-cycle-chart {
+.outerwrapper .info-box .life-cycle-chart, .outerwrapper .info-box .vaccination-chart {
   position: relative;
 }
 .outerwrapper .info-box .life-cycle-header {
@@ -760,7 +760,6 @@ BuildWidget.prototype.updateLifeCycle = function() {
 };
  
 BuildWidget.prototype.updateVaccinationChart = function() {
-	console.log("I'm updating that vaccination chart");
 	var self = this;
 
 	if ( this.features[this.params.selectedFeature].vaccineData ) {
@@ -805,7 +804,7 @@ BuildWidget.prototype.updateVaccinationChart = function() {
 			.attr("stroke-width",'2px')
 			.attr("stroke",this.params.uiColour.vaccinationLineColour);
 
-		// this.buildTooltip();
+		this.buildTooltip();
 	} else {
 		this.vaccinationPath.attr("d", "M0,0 L0,0");
 
@@ -916,10 +915,39 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 		}).on("mouseout", function () {
 			self.hideTooltip();
 		});
+
+	this.vaccinationCircles.selectAll("circle")
+		.on("mouseover", function (d) {
+			console.log("ouch!");
+			var myCircle = d3.select(this);
+
+			d3.select("#circle-vaccination").text(self.params.format(d.rate) + " %");
+
+			var tooltipWidth = parseInt(d3.select("#vaccination-tooltip").style("padding-left"),10) + parseInt(d3.select("#vaccination-tooltip").style("width"),10) + parseInt(d3.select("#vaccination-tooltip").style("padding-right"),10);
+
+			var top = (parseFloat(myCircle.attr("cy")) + self.params.lifeCycleMargin.top);
+			var left = (parseFloat(myCircle.attr("cx")) + self.params.lifeCycleMargin.left);
+
+			if ( parseFloat(myCircle.attr("cx")) > (self.params.lifeCycleWidth / 2) ) {
+				left -= tooltipWidth;
+			}
+
+			d3.select("#vaccination-tooltip")
+				.style("top",  top + "px")
+				.style("left", left + "px")
+				.classed("hidden", false);
+
+		}).on("mouseout", function () {
+			self.hideVaccineTooltip();
+		});
 };
 
 BuildWidget.prototype.hideTooltip = function () {
 	d3.select("#widget-tooltip").classed("hidden", true);
+};
+
+BuildWidget.prototype.hideVaccineTooltip = function () {
+	d3.select("#vaccination-tooltip").classed("hidden", true);
 };
 
 BuildWidget.prototype.buildCheckbox = function() {

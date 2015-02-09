@@ -1,5 +1,4 @@
 BuildWidget.prototype.updateVaccinationChart = function() {
-	console.log("I'm updating that vaccination chart");
 	var self = this;
 
 	if ( this.features[this.params.selectedFeature].vaccineData ) {
@@ -44,7 +43,7 @@ BuildWidget.prototype.updateVaccinationChart = function() {
 			.attr("stroke-width",'2px')
 			.attr("stroke",this.params.uiColour.vaccinationLineColour);
 
-		// this.buildTooltip();
+		this.buildTooltip();
 	} else {
 		this.vaccinationPath.attr("d", "M0,0 L0,0");
 

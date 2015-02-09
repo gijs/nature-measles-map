@@ -105,7 +105,7 @@
   margin: 0 15px 15px 15px;
   clear: both;
 }
-.outerwrapper .info-box .life-cycle-chart {
+.outerwrapper .info-box .life-cycle-chart, .outerwrapper .info-box .vaccination-chart {
   position: relative;
 }
 .outerwrapper .info-box .life-cycle-header {
