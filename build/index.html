@@ -233,7 +233,13 @@
 		
 		<div class="life-cycle-chart" id="life-cycle-chart">
 			<div class="widget-tooltip hidden" id="widget-tooltip">
-				<p id="circle-cases">Hello!</p>
+				<p id="circle-cases"></p>
+			</div>
+		</div>
+
+		<div class="vaccination-chart" id="vaccination-chart">
+			<div class="widget-tooltip hidden" id="vaccination-tooltip">
+				<p id="circle-vaccination"></p>
 			</div>
 		</div>
 	</div>
@@ -314,20 +320,23 @@ function buildParams () {
 		grey: "#666",
 		darkGrey: "#333",
 		noData: "#ccc",
-		lineColour: "#0B7B0B"	
+		lineColour: "#45A72C",
+		vaccinationLineColour: "#006DB2"	
 	};
 
 	params.key = {
 		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
-		keyHead: "Cases of measles"
+		keyHead: "Cases of measles",
+		keyHeadVaccination: "Vaccination rate %"
 	};
 
 	/* Life cycle data */
 	params.selectedCountry = "United States of America (the)";
 	params.selectedID = "USA";
 	params.selectedData = [];
+	params.selectedVaccinationData = [];
 	params.selectedMaxArray = [];
 	params.selectedFeature = 202;
 
@@ -336,6 +345,7 @@ function buildParams () {
 	params.brushTarget = "#year-slider";
 	params.keyTarget = "#measles-scale";
 	params.lifeCycleChartTarget = "#life-cycle-chart";
+	params.vaccinationChartTarget = "#vaccination-chart";
 	params.selectedCountryTarget = "#selected-country";
 	params.checkboxTarget = "#scale-y-axis";
 
@@ -537,7 +547,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 	if ( this.params.scaleYAxis ) {
 		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 	} else {
-		this.yScaleLifeCycle.domain([0, (1235000) ]);
+		this.yScaleLifeCycle.domain([0, 1235000 ]);
 	}
 
 	this.xAxisLifeCycle = d3.svg.axis()
@@ -601,6 +611,93 @@ BuildWidget.prototype.buildLifeCycle = function() {
 
 };
 
+BuildWidget.prototype.buildVaccinationChart = function() {
+	var self = this;
+
+	this.vaccinationSvg = d3.select(this.params.vaccinationChartTarget).append("svg")
+		.attr("width", this.params.lifeCycleWidth + this.params.lifeCycleMargin.left + this.params.lifeCycleMargin.right)
+		.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom)
+	  .append("g")
+		.attr("transform", "translate(" + this.params.lifeCycleMargin.left + "," + this.params.lifeCycleMargin.top + ")");
+
+	this.vaccinationSvg.append("g")
+		.attr("class","white-box")
+	  .append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", this.params.lifeCycleWidth)
+		.attr("height", this.params.lifeCycleHeight)
+		.attr("fill","#FFF");
+
+	this.xScaleVaccination = d3.scale.linear()
+		.range([0, this.params.lifeCycleWidth])
+		.domain([1980, 2013]);
+
+	this.yScaleVaccination = d3.scale.linear()
+		.range([this.params.lifeCycleHeight, 0])
+		.domain([0, 100]);
+
+	this.xAxisVaccination = d3.svg.axis()
+		.scale(this.xScaleVaccination)
+		.tickFormat(function(d) { return d; })
+		.ticks(this.params.ticks)
+		.orient("bottom");
+
+	this.yAxisVaccination = d3.svg.axis()
+		.scale(this.yScaleVaccination)
+		.ticks(5)
+		.tickSize(-this.params.lifeCycleWidth, 0)
+		.orient("left");
+
+	this.vaccinationLine = d3.svg.line()
+		.x(function(d) { return self.xScaleVaccination(d.date); })
+		.y(function(d) { return self.yScaleVaccination(d.rate); });
+
+	this.vaccinationSvg.append("g")
+	    .attr("class", "x axis")
+	    .attr("transform", "translate(0," + this.params.lifeCycleHeight + ")")
+	    .call(this.xAxisVaccination);
+
+	this.vaccinationSvg.append("g")
+	    .attr("class", "y axis")
+	    .call(this.yAxisVaccination)
+	  .append("text")
+	    .attr("transform", "translate(" + -(this.params.lifeCycleMargin.left * 0.5) + "," + (this.params.lifeCycleHeight/2) + "), rotate(-90)")
+	    .attr("y", 6)
+	    .attr("dy", ".5em")
+	    .style("text-anchor", "middle")
+	    .text(this.params.key.keyHeadVaccination);
+
+	this.vaccinationPath = this.vaccinationSvg.append("path")
+		.data([this.params.selectedVaccinationData, function (d) {
+			return d.date;
+		}])
+		.attr("class","line")
+		.attr("fill", "none")
+		.attr("stroke", this.params.uiColour.vaccinationLineColour)
+		.attr("stroke-width", self.params.lifeCycleRadius)
+		.attr("d", this.vaccinationLine);
+
+	this.vaccinationCircles = this.vaccinationSvg.append("g");
+
+	this.vaccinationCircles.selectAll("circle")
+		.data(this.params.selectedVaccinationData, function (d) {
+			return d.date;
+		})
+		.enter().append("circle")
+		.attr("cx", function(d) {
+			return self.xScaleVaccination(d.date);
+		})
+		.attr("cy", function(d) {
+			return self.yScaleVaccination(d.rate);
+		})
+		.attr("r", self.params.lifeCycleRadius)
+		.attr("fill", this.params.uiColour.veryLightGrey)
+		.attr("stroke-width",'2px')
+		.attr("stroke",this.params.uiColour.vaccinationLineColour);
+
+};
+
 BuildWidget.prototype.updateLifeCycle = function() {
 	var self = this;
 
@@ -610,7 +707,7 @@ BuildWidget.prototype.updateLifeCycle = function() {
 		if ( this.params.scaleYAxis ) {
 			this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 		} else {
-			this.yScaleLifeCycle.domain([0, (1235000) ]);
+			this.yScaleLifeCycle.domain([0, 1235000]);
 		}
 
 		this.lifeCycleSvg.select(".y")
@@ -662,12 +759,69 @@ BuildWidget.prototype.updateLifeCycle = function() {
 	}
 };
  
+BuildWidget.prototype.updateVaccinationChart = function() {
+	console.log("I'm updating that vaccination chart");
+	var self = this;
+
+	if ( this.features[this.params.selectedFeature].vaccineData ) {
+			
+		this.vaccinationPath
+			.data([this.params.selectedVaccinationData, function (d) {
+				return d.date;
+			}])
+			.attr("d", this.vaccinationLine);
+
+		this.vaccinationCircles.selectAll("circle")
+			.data(this.params.selectedVaccinationData, function (d) {
+				return d.date;
+			})
+			.attr("cx", function(d) {
+				return self.xScaleVaccination(d.date);
+			})
+			.attr("cy", function(d) {
+				return self.yScaleVaccination(d.rate);
+			});
+
+		this.vaccinationCircles.selectAll("circle")
+			.data(this.params.selectedVaccinationData, function (d) {
+				return d.date;
+			})
+			.exit()
+			.remove();
+
+		this.vaccinationCircles.selectAll("circle")
+			.data(this.params.selectedVaccinationData, function (d) {
+				return d.date;
+			})
+			.enter().append("circle")
+			.attr("cx", function(d) {
+				return self.xScaleVaccination(d.date);
+			})
+			.attr("cy", function(d) {
+				return self.yScaleVaccination(d.rate);
+			})
+			.attr("r", self.params.lifeCycleRadius)
+			.attr("fill", this.params.uiColour.veryLightGrey)
+			.attr("stroke-width",'2px')
+			.attr("stroke",this.params.uiColour.vaccinationLineColour);
+
+		// this.buildTooltip();
+	} else {
+		this.vaccinationPath.attr("d", "M0,0 L0,0");
+
+		this.vaccinationCircles.selectAll("circle").remove();
+	}
+};
 BuildWidget.prototype.buildData = function() {
 	this.params.selectedID = this.features[this.params.selectedFeature].id;
 
 	/*	Remove all the old objects from the arrays */
 	while ( this.params.selectedData.length > 0 ) {
 		this.params.selectedData.pop();
+	}
+
+	while ( this.params.selectedVaccinationData.length > 0 ) {
+		this.params.selectedVaccinationData.pop();
 	}
 
 	while ( this.params.selectedMaxArray.length > 0 ) {
@@ -679,15 +833,30 @@ BuildWidget.prototype.buildData = function() {
 		
 		for (var i = 1980; i < 2014; i++) {
 			if ( this.features[this.params.selectedFeature].caseData[0][i] !== "noData" ) {
-				var myObject = {};
-				myObject.date = i; 
-				myObject.cases = this.features[this.params.selectedFeature].caseData[0][i];
-				this.params.selectedData.push(myObject);
+				var myCaseObject = {};
+				myCaseObject.date = i; 
+				myCaseObject.cases = this.features[this.params.selectedFeature].caseData[0][i];
+				this.params.selectedData.push(myCaseObject);
 			}
 		}
 
-		this.pubsub.publish("newDataReady");
 	}
+
+	if ( this.features[this.params.selectedFeature].vaccineData ) {
+		
+		for (var j = 1980; j < 2014; j++) {
+			if ( this.features[this.params.selectedFeature].vaccineData[0][j] !== "noData" ) {
+				var myVaccineObject = {};
+				myVaccineObject.date = j; 
+				myVaccineObject.rate = this.features[this.params.selectedFeature].vaccineData[0][j];
+				this.params.selectedVaccinationData.push(myVaccineObject);
+			}
+		}
+
+	}
+
+	this.pubsub.publish("newDataReady");
+	console.log(this.features[this.params.selectedFeature]);
 };
 
 BuildWidget.prototype.buildKey = function() {
@@ -798,6 +967,12 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 		this.parent.updateLifeCycle();
 	} else {
 		this.parent.buildLifeCycle();
+	}
+
+	if ( this.parent.vaccinationSvg ) {
+		this.parent.updateVaccinationChart();
+	} else {
+		this.parent.buildVaccinationChart();
 	}
 };
 

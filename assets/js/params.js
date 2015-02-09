@@ -19,20 +19,23 @@ function buildParams () {
 		grey: "#666",
 		darkGrey: "#333",
 		noData: "#ccc",
-		lineColour: "#0B7B0B"	
+		lineColour: "#45A72C",
+		vaccinationLineColour: "#006DB2"	
 	};
 
 	params.key = {
 		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
-		keyHead: "Cases of measles"
+		keyHead: "Cases of measles",
+		keyHeadVaccination: "Vaccination rate %"
 	};
 
 	/* Life cycle data */
 	params.selectedCountry = "United States of America (the)";
 	params.selectedID = "USA";
 	params.selectedData = [];
+	params.selectedVaccinationData = [];
 	params.selectedMaxArray = [];
 	params.selectedFeature = 202;
 
@@ -41,6 +44,7 @@ function buildParams () {
 	params.brushTarget = "#year-slider";
 	params.keyTarget = "#measles-scale";
 	params.lifeCycleChartTarget = "#life-cycle-chart";
+	params.vaccinationChartTarget = "#vaccination-chart";
 	params.selectedCountryTarget = "#selected-country";
 	params.checkboxTarget = "#scale-y-axis";
 

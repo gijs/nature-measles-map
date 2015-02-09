@@ -12,4 +12,10 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 	} else {
 		this.parent.buildLifeCycle();
 	}
+
+	if ( this.parent.vaccinationSvg ) {
+		this.parent.updateVaccinationChart();
+	} else {
+		this.parent.buildVaccinationChart();
+	}
 };

@@ -28,7 +28,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 	if ( this.params.scaleYAxis ) {
 		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 	} else {
-		this.yScaleLifeCycle.domain([0, (1235000) ]);
+		this.yScaleLifeCycle.domain([0, 1235000 ]);
 	}
 
 	this.xAxisLifeCycle = d3.svg.axis()

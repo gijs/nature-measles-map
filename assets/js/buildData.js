@@ -6,6 +6,10 @@ BuildWidget.prototype.buildData = function() {
 		this.params.selectedData.pop();
 	}
 
+	while ( this.params.selectedVaccinationData.length > 0 ) {
+		this.params.selectedVaccinationData.pop();
+	}
+
 	while ( this.params.selectedMaxArray.length > 0 ) {
 		this.params.selectedMaxArray.pop();
 	}
@@ -15,13 +19,28 @@ BuildWidget.prototype.buildData = function() {
 		
 		for (var i = 1980; i < 2014; i++) {
 			if ( this.features[this.params.selectedFeature].caseData[0][i] !== "noData" ) {
-				var myObject = {};
-				myObject.date = i; 
-				myObject.cases = this.features[this.params.selectedFeature].caseData[0][i];
-				this.params.selectedData.push(myObject);
+				var myCaseObject = {};
+				myCaseObject.date = i; 
+				myCaseObject.cases = this.features[this.params.selectedFeature].caseData[0][i];
+				this.params.selectedData.push(myCaseObject);
 			}
 		}
 
-		this.pubsub.publish("newDataReady");
 	}
+
+	if ( this.features[this.params.selectedFeature].vaccineData ) {
+		
+		for (var j = 1980; j < 2014; j++) {
+			if ( this.features[this.params.selectedFeature].vaccineData[0][j] !== "noData" ) {
+				var myVaccineObject = {};
+				myVaccineObject.date = j; 
+				myVaccineObject.rate = this.features[this.params.selectedFeature].vaccineData[0][j];
+				this.params.selectedVaccinationData.push(myVaccineObject);
+			}
+		}
+
+	}
+
+	this.pubsub.publish("newDataReady");
+	console.log(this.features[this.params.selectedFeature]);
 };
