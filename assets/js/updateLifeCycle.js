@@ -3,7 +3,7 @@ BuildWidget.prototype.updateLifeCycle = function() {
 
 	this.selectedCountryLabel.text(this.params.selectedCountry);
 
-	if ( this.features[this.params.selectedFeature].values ) {
+	if ( this.features[this.params.selectedFeature].caseData ) {
 		if ( this.params.scaleYAxis ) {
 			this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 		} else {

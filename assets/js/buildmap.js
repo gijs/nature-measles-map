@@ -29,11 +29,11 @@ BuildWidget.prototype.buildMap = function() {
 		.enter().append("path")
 		.attr("d", this.params.path)
 		.attr("fill", function (d) {
-			if ( d.values ) {
-				if ( d.values[0][self.params.year] === "noData") {
+			if ( d.caseData ) {
+				if ( d.caseData[0][self.params.year] === "noData") {
 					return self.params.uiColour.noData;
 				} else {
-					return self.params.color(d.values[0][self.params.year]);
+					return self.params.color(d.caseData[0][self.params.year]);
 				}
 
 			} else {

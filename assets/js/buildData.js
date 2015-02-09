@@ -10,14 +10,14 @@ BuildWidget.prototype.buildData = function() {
 		this.params.selectedMaxArray.pop();
 	}
 
-	if ( this.features[this.params.selectedFeature].values ) {
-		this.params.selectedCountry = this.features[this.params.selectedFeature].values[0].Cname;
+	if ( this.features[this.params.selectedFeature].caseData ) {
+		this.params.selectedCountry = this.features[this.params.selectedFeature].caseData[0].Cname;
 		
 		for (var i = 1980; i < 2014; i++) {
-			if ( this.features[this.params.selectedFeature].values[0][i] !== "noData" ) {
+			if ( this.features[this.params.selectedFeature].caseData[0][i] !== "noData" ) {
 				var myObject = {};
 				myObject.date = i; 
-				myObject.cases = this.features[this.params.selectedFeature].values[0][i];
+				myObject.cases = this.features[this.params.selectedFeature].caseData[0][i];
 				this.params.selectedData.push(myObject);
 			}
 		}

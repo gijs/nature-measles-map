@@ -1,67 +1,121 @@
 (function() {
 	var init = function($) {
 
+		var casesURL = "data/cases-by-who-region.csv";
+		var vaccinationURL = "data/vaccination-by-who-region.csv";
+		var countriesURL = "data/countries.json";
+
 		// $.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
 		$.when( $.getScript("http://d3js.org/d3.v3.min.js"),
 				$.getScript("data/topojson.v1.min.js")
 		).then( function () {
 
-			d3.csv("data/cases-by-who-region-edit.csv", function (error, d) {
+			/*	Load the data in parallel */
+			/*	https://groups.google.com/forum/#!msg/d3-js/3Y9VHkOOdCM/YnmOPopWUxQJ */
+			var caseData;
+			var vaccinationData;
+			var worldData;
+			var remaining = 3;
+
+			d3.csv(casesURL, function (error, d) {
 				if (error) {
 					$(".widget-status-message").css("display","none");
 					$(".widget-error-message").css("display","block");
 				} else {
-					$(".widget-status-message").css("display","none");
-					$(".outerwrapper").css("display","block");
-
-					/* Convert the text numbers into real numbers */
-					/* If the number is "" make it "noData" */
-					d.forEach(function (element) {
-						for (var i = 1980; i < 2014; i++) {
-							element[i] = parseInt(element[i], 10) || "noData";
-						}
-					});
-
-					/*  Nest the data by country code */
-					var nestedData = d3.nest()
-										.key( function (d) {
-											return d.ISO_code;
-										})
-										.entries(d);
-
-					d3.json("data/countries.json", function(error, world) {
-
-						var features = topojson.feature(world, world.objects.units).features;
-
-						for (var i = 0; i < features.length; i++) {
-
-							for (var k = 0; k < nestedData.length; k++) {
-
-								if ( nestedData[k].key === features[i].id ) {
-									features[i].values = nestedData[k].values;
-								}
-							}
-						}
-
-						var params = buildParams();
-
-						var measlesMap = new BuildWidget(params, features, world);
-						extendObject(measlesMap.pubsub);
-						/*	Create subscriptions */
-						measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
-						measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
-						measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
-
-						/*	Call functions to bulid the map, brush, checkbox, data, linegraph and tooltip */
-						measlesMap.buildMap();
-						measlesMap.buildBrush();
-						measlesMap.buildKey();
-						measlesMap.buildCheckbox();
-						measlesMap.buildData(features[measlesMap.params.selectedFeature]);
-						measlesMap.buildTooltip();
-					});
+					caseData = d;
+					if (!--remaining) buildGraphic();
 				}
 			});
+
+			d3.csv(vaccinationURL, function (error, d) {
+				if (error) {
+					$(".widget-status-message").css("display","none");
+					$(".widget-error-message").css("display","block");
+				} else {
+					vaccinationData = d;
+					if (!--remaining) buildGraphic();
+				}
+			});
+
+			d3.json(countriesURL, function(error, world) {
+
+				if (error) {
+					$(".widget-status-message").css("display","none");
+					$(".widget-error-message").css("display","block");
+				} else {
+					worldData = world;
+					if (!--remaining) buildGraphic();
+				}
+
+			});
+
+			function buildGraphic () {
+				$(".widget-status-message").css("display","none");
+				$(".outerwrapper").css("display","block");
+
+				/* Convert the text numbers into real numbers */
+				/* If the number is "" make it "noData" */
+				caseData.forEach(function (element) {
+					for (var i = 1980; i < 2014; i++) {
+						element[i] = parseInt(element[i], 10) || "noData";
+					}
+				});
+
+				vaccinationData.forEach(function (element) {
+					for (var i = 1980; i < 2014; i++) {
+						element[i] = parseInt(element[i], 10) || "noData";
+					}
+				});
+
+				/*  Nest the data by country code */
+				var nestedCaseData = d3.nest()
+									.key( function (d) {
+										return d.ISO_code;
+									})
+									.entries(caseData);
+
+				var nestedVaccinationData = d3.nest()
+									.key( function (d) {
+										return d.ISO_code;
+									})
+									.entries(vaccinationData);
+
+				var features = topojson.feature(worldData, worldData.objects.units).features;
+
+				for (var i = 0; i < features.length; i++) {
+
+					for (var k = 0; k < nestedCaseData.length; k++) {
+
+						if ( nestedCaseData[k].key === features[i].id ) {
+							features[i].caseData = nestedCaseData[k].values;
+						}
+					}
+
+					for (var j = 0; j < nestedVaccinationData.length; j++) {
+
+						if ( nestedVaccinationData[j].key === features[i].id ) {
+							features[i].vaccineData = nestedVaccinationData[j].values;
+						}
+					}
+				}
+
+				var params = buildParams();
+
+				var measlesMap = new BuildWidget(params, features, worldData);
+				extendObject(measlesMap.pubsub);
+				/*	Create subscriptions */
+				measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
+				measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
+				measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
+
+				/*	Call functions to bulid the map, brush, checkbox, data, linegraph and tooltip */
+				measlesMap.buildMap();
+				measlesMap.buildBrush();
+				measlesMap.buildKey();
+				measlesMap.buildCheckbox();
+				measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+				measlesMap.buildTooltip();
+			}
 		});
 
 	/* End of active code */

@@ -8,15 +8,77 @@
 - [ ] Upload data
 - [ ] Add next and previous buttons and year picker for mobile
 
+## Cases of measles data
+
 Convert the data from excel to csv
 
-	in2csv build/data/Cases_by_WHO_region.xls > build/data/cases-by-who-region.csv
+	in2csv ref/Cases_by_WHO_region.xls > ref/cases-by-who-region.csv
 
 Take a look at the columns available
 
-	csvcut -n build/data/cases-by-who-region.csv
+	csvcut -n ref/cases-by-who-region.csv
 
 Let's remove 1: WHO_REGION and 4: Disease
 
-	csvcut -c 2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38 build/data/cases-by-who-region.csv > build/data/cases-by-who-region-edit.csv
+	csvcut -c 2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38 ref/cases-by-who-region.csv > ref/cases-by-who-region-edit.csv
+
+## Vaccination coverage data
+
+[http://apps.who.int/gho/data/node.main.A826?lang=en](http://apps.who.int/gho/data/node.main.A826?lang=en)
+
+Remove the 1st line opening line
+
+	cat ref/xmart.csv | sed "1 d" > ref/vaccination-by-who-region.csv
+
+Take a look at the available columns
+
+	csvcut -n ref/vaccination-by-who-region.csv
+
+CSV Clean tells us there is an extra column
+
+	csvclean -n ref/vaccination-by-who-region.csv
+
+Create a copy of the file with out the extra column
+
+	csvcut -c 1-35 ref/vaccination-by-who-region.csv > ref/vaccination-by-who-region.csv.tmp && mv ref/vaccination-by-who-region.csv.tmp ref/vaccination-by-who-region.csv
+
+CSV Clean will no confirm that there are no errors.
+
+Next we'll want to extract the country codes from the `cases-by-who-region.csv` so the they can be merged with this file.
+
+	csvcut -c 1,2 ref/cases-by-who-region-edit.csv > ref/country-codes.csv
+
+Now we'll join the country codes to the vaccination data
+
+	csvjoin -c "Cname,COUNTRY" ref/country-codes.csv ref/vaccination-by-who-region.csv > ref/temp.csv && mv ref/temp.csv ref/vaccination-by-who-region.csv
+
+And we can drop the COUNTRY column
+
+	csvcut -c 1,2,4-37 ref/vaccination-by-who-region.csv > ref/temp.csv && mv ref/temp.csv ref/vaccination-by-who-region.csv
+
+We can now count the lines in each file
+
+	wc -l ref/vaccination-by-who-region.csv
+	wc -l ref/cases-by-who-region-edit.csv
+
+There are more lines in the Cases file so we know there are some countries that do not have vaccination data.
+
+Move both files into our build directory 
+
+	cp ref/vaccination-by-who-region.csv build/data/
+	cp ref/cases-by-who-region-edit.csv build/data/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

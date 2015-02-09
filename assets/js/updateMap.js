@@ -5,11 +5,11 @@ BuildWidget.prototype.updateMap = function() {
 
 	this.countriesSvg.selectAll("path")
 		.attr("fill", function (d) {
-			if ( d.values ) {
-				if ( d.values[0][year] === "noData") {
+			if ( d.caseData ) {
+				if ( d.caseData[0][year] === "noData") {
 					return self.params.uiColour.noData;
 				} else {
-					return self.params.color(d.values[0][year]);
+					return self.params.color(d.caseData[0][year]);
 				}
 
 			} else {
