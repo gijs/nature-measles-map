@@ -36,5 +36,3 @@ BuildWidget.prototype.buildKey = function() {
 		.text("No data")
 		.style("border-left-color", self.params.uiColour.noData);
 };
-
-

@@ -24,20 +24,4 @@ BuildWidget.prototype.buildData = function() {
 
 		this.pubsub.publish("newDataReady");
 	}
-
-
-	// console.log(this.params.selectedCountry);
-	// console.log(this.params.selectedID);
-	// console.table(this.params.selectedData);
-
-	// if ( d.values ) {
-	// 	if ( d.values[0][self.params.year] === "noData") {
-	// 		console.log(d.values[0].Cname +  ": No Data");
-	// 	} else {
-	// 		console.log(d.values[0].ISO_code);
-	// 		// console.log(d.values[0].Cname + ": " + d.values[0][self.params.year] + " cases");
-	// 	}
-	// } else {
-	// 	console.log(d.id + ": No Data");
-	// }
 };

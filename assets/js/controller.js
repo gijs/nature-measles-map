@@ -12,5 +12,4 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 	} else {
 		this.parent.buildLifeCycle();
 	}
-
 };

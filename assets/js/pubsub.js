@@ -42,5 +42,4 @@ function extendObject (myObject) {
 		});
 		return token;
 	};
-
 }

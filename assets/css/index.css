@@ -1,7 +1,11 @@
-.status-message {
+.widget-status-message, .widget-error-message {
   border: 1px solid #c00;
   background: #fac7c7;
   padding: 10px;
+}
+
+.widget-error-message {
+  display: none;
 }
 
 .outerwrapper {
@@ -9,6 +13,7 @@
   min-height: 900px;
   position: relative;
   border: 1px solid #c8c7cf;
+  display: none;
 }
 .outerwrapper .header h2 {
   padding: 10px 15px;

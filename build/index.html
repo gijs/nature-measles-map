@@ -48,10 +48,14 @@
 
 
 <style scoped>
-.status-message {
+.widget-status-message, .widget-error-message {
   border: 1px solid #c00;
   background: #fac7c7;
   padding: 10px;
+}
+
+.widget-error-message {
+  display: none;
 }
 
 .outerwrapper {
@@ -59,6 +63,7 @@
   min-height: 900px;
   position: relative;
   border: 1px solid #c8c7cf;
+  display: none;
 }
 .outerwrapper .header h2 {
   padding: 10px 15px;
@@ -194,6 +199,14 @@
 }
 
 </style>
+<div class="widget-status-message">
+	<p>This interactive graphic requires a modern browser (e.g. Chrome, Safari or Firefox) with javascript enabled.</p>
+</div>
+
+<div class="widget-error-message">
+	<p>The data needed for this interactive graphic has failed to load.</p>
+</div>
+
 <div class="outerwrapper">
 	<div class="header">
 		<h2>Headline</h2>
@@ -266,8 +279,8 @@ function extendObject (myObject) {
 		});
 		return token;
 	};
-
 }
+
 function BuildWidget (params, features, world) {
 	this.params = params;
 	this.features = features;
@@ -352,6 +365,7 @@ function buildParams () {
 
 	return params;
 }
+
 BuildWidget.prototype.buildMap = function() {
 	var self = this;
 
@@ -657,22 +671,6 @@ BuildWidget.prototype.buildData = function() {
 
 		this.pubsub.publish("newDataReady");
 	}
-
-
-	// console.log(this.params.selectedCountry);
-	// console.log(this.params.selectedID);
-	// console.table(this.params.selectedData);
-
-	// if ( d.values ) {
-	// 	if ( d.values[0][self.params.year] === "noData") {
-	// 		console.log(d.values[0].Cname +  ": No Data");
-	// 	} else {
-	// 		console.log(d.values[0].ISO_code);
-	// 		// console.log(d.values[0].Cname + ": " + d.values[0][self.params.year] + " cases");
-	// 	}
-	// } else {
-	// 	console.log(d.id + ": No Data");
-	// }
 };
 
 BuildWidget.prototype.buildKey = function() {
@@ -714,9 +712,6 @@ BuildWidget.prototype.buildKey = function() {
 		.style("border-left-color", self.params.uiColour.noData);
 };
 
-
-
-// buildScales.js
 BuildWidget.prototype.buildTooltip = function (selection) {
 	var self = this;
 
@@ -748,6 +743,7 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 BuildWidget.prototype.hideTooltip = function () {
 	d3.select("#widget-tooltip").classed("hidden", true);
 };
+
 BuildWidget.prototype.buildCheckbox = function() {
 	var self = this;
 	this.checkbox = d3.select(this.params.checkboxTarget);
@@ -794,77 +790,85 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 	} else {
 		this.parent.buildLifeCycle();
 	}
-
 };
+
 (function() {
 	var init = function($) {
 
 		$.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
-		// $.when( $.getScript("http://d3js.org/d3.v3.min.js"),
-				$.getScript("http://d3js.org/topojson.v1.min.js")
+				$.getScript("data/topojson.v1.min.js")
 		).then( function () {
 
-			
+			d3.csv("data/cases-by-who-region-edit.csv", function (error, d) {
+				if (error) {
+					$(".widget-status-message").css("display","none");
+					$(".widget-error-message").css("display","block");
+				} else {
+					$(".widget-status-message").css("display","none");
+					$(".outerwrapper").css("display","block");
 
-			d3.csv("data/cases-by-who-region-edit.csv", function (d) {
-				/* Convert the text numbers into real numbers */
-				/* If the number is "" make it zero */
-				d.forEach(function (element) {
-					for (var i = 1980; i < 2014; i++) {
-						element[i] = parseInt(element[i], 10) || "noData";
-					}
-				});
+					/* Convert the text numbers into real numbers */
+					/* If the number is "" make it "noData" */
+					d.forEach(function (element) {
+						for (var i = 1980; i < 2014; i++) {
+							element[i] = parseInt(element[i], 10) || "noData";
+						}
+					});
 
-				/*  Nest the data by country code */
-				var nestedData = d3.nest()
-									.key( function (d) {
-										return d.ISO_code;
-									})
-									.entries(d);
+					/*  Nest the data by country code */
+					var nestedData = d3.nest()
+										.key( function (d) {
+											return d.ISO_code;
+										})
+										.entries(d);
 
-				d3.json("data/countries.json", function(error, world) {
+					d3.json("data/countries.json", function(error, world) {
 
-					var features = topojson.feature(world, world.objects.units).features;
+						var features = topojson.feature(world, world.objects.units).features;
 
-					for (var i = 0; i < features.length; i++) {
+						for (var i = 0; i < features.length; i++) {
 
-						for (var k = 0; k < nestedData.length; k++) {
+							for (var k = 0; k < nestedData.length; k++) {
 
-							if ( nestedData[k].key === features[i].id ) {
-								features[i].values = nestedData[k].values;
+								if ( nestedData[k].key === features[i].id ) {
+									features[i].values = nestedData[k].values;
+								}
 							}
 						}
-					}
 
-					var params = buildParams();
+						var params = buildParams();
 
-					var measlesMap = new BuildWidget(params, features, world);
-					extendObject(measlesMap.pubsub);
-					/*	Create subscriptions */
-					measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
-					measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
-					measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
+						var measlesMap = new BuildWidget(params, features, world);
+						extendObject(measlesMap.pubsub);
+						/*	Create subscriptions */
+						measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
+						measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
+						measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
 
-					measlesMap.buildMap();
-					measlesMap.buildBrush();
-					measlesMap.buildKey();
-					measlesMap.buildCheckbox();
-					measlesMap.buildData(features[measlesMap.params.selectedFeature]);
-					measlesMap.buildTooltip();
-					// measlesMap.buildLifeCycle();
-
-
-				});
+						/*	Call functions to bulid the map, brush, checkbox, data, linegraph and tooltip */
+						measlesMap.buildMap();
+						measlesMap.buildBrush();
+						measlesMap.buildKey();
+						measlesMap.buildCheckbox();
+						measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+						measlesMap.buildTooltip();
+					});
+				}
 			});
 		});
 
 	/* End of active code */
 	};
 
-
 	setTimeout(function() {
 		if (typeof jQuery !== 'undefined') {
-			init(jQuery);
+			/*	jQuery ready test for svg */
+			if ( document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image','1.1') ) {
+				init(jQuery);
+				return;
+			} else {
+				return;	
+			}
 		} else {
 			setTimeout(arguments.callee, 60);
 		}
