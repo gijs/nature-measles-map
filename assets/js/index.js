@@ -1,7 +1,8 @@
 (function() {
 	var init = function($) {
 
-		$.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
+		// $.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
+		$.when( $.getScript("http://d3js.org/d3.v3.min.js"),
 				$.getScript("data/topojson.v1.min.js")
 		).then( function () {
 

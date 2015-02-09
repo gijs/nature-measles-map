@@ -249,6 +249,16 @@ function buildParams () {
 
 	var contentWidth = jQuery("#content").width();
 
+	params.mapScale = 100;
+	params.ticks = 20;
+	params.lifeCycleRadius = "4px";
+
+	if ( contentWidth < 310 ) {
+		params.mapScale = 50;
+		params.ticks = 5;
+		params.lifeCycleRadius = "2px";
+	}
+
 	params.uiColour = {
 		veryLightGrey: "#ddd",
 		lightGrey: "#999",
@@ -295,7 +305,7 @@ function buildParams () {
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
 	params.scaleYAxis = false;
-	params.lifeCycleRadius = "4px";
+
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -315,7 +325,7 @@ function buildParams () {
 					.clamp(true);
 
 	params.projection = d3.geo.mercator()
-						.scale(650)
+						.scale(params.mapScale)
     					.translate([(params.mapWidth * 0.5), (params.mapHeight * 0.6)]);
 
 	params.path = d3.geo.path()
@@ -395,12 +405,12 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 	this.brush = d3.svg.brush()
 					.x(this.params.brushScale)
-					.extent(0, 0)
+					.extent([0, 0])
 					.on("brush", brushed);
 
 	this.rangeSvg = d3.select(this.params.brushTarget).append("svg")
 						.attr("width", this.params.brushWidth + this.params.brushMargin.left + this.params.brushMargin.right)
-						.attr("height", this.params.brushHeight)
+						.attr("height", this.params.brushHeight + this.params.brushMargin.top + this.params.brushMargin.bottom)
 					  .append("g")
 						.attr("transform", "translate(" + this.params.brushMargin.left + "," + this.params.brushMargin.top + ")");
 
@@ -409,7 +419,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 						.orient("bottom")
 						.tickFormat(function(d) { return d; })
 						.tickSize(0)
-						.ticks(20)
+						.ticks(this.params.ticks)
 						.tickPadding(12);
 
 	this.rangeSvg.append("g")
@@ -422,7 +432,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 	this.slider = this.rangeSvg.append("g")
     	.attr("class", "slider")
-    	.call(this.brush);
+    	.call(self.brush);
 
 	this.slider.selectAll(".extent,.resize")
     	.remove();
@@ -436,7 +446,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 		var value = self.brush.extent()[0];
 
 		if (d3.event.sourceEvent) { /* not a programmatic event*/
-			value = self.params.brushScale.invert(d3.mouse(this)[0]);
+			value = Math.floor(self.params.brushScale.invert(d3.mouse(this)[0]));
 			self.brush.extent([value, value]);
 		}
 
@@ -484,7 +494,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 	this.xAxisLifeCycle = d3.svg.axis()
 		.scale(this.xScaleLifeCycle)
 		.tickFormat(function(d) { return d; })
-		.ticks(20)
+		.ticks(this.params.ticks)
 		.orient("bottom");
 
 	this.yAxisLifeCycle = d3.svg.axis()
@@ -535,7 +545,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("cy", function(d) {
 			return self.yScaleLifeCycle(d.cases);
 		})
-		.attr("r", "4px")
+		.attr("r", self.params.lifeCycleRadius)
 		.attr("fill", this.params.uiColour.veryLightGrey)
 		.attr("stroke-width",'2px')
 		.attr("stroke",this.params.uiColour.lineColour);
@@ -745,7 +755,8 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 (function() {
 	var init = function($) {
 
-		$.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
+		// $.when( $.getScript("http://www.nature.com/polopoly_static/js/d3.v3.min.js"),
+		$.when( $.getScript("http://d3js.org/d3.v3.min.js"),
 				$.getScript("data/topojson.v1.min.js")
 		).then( function () {
 

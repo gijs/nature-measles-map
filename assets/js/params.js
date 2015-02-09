@@ -3,6 +3,16 @@ function buildParams () {
 
 	var contentWidth = jQuery("#content").width();
 
+	params.mapScale = 100;
+	params.ticks = 20;
+	params.lifeCycleRadius = "4px";
+
+	if ( contentWidth < 310 ) {
+		params.mapScale = 50;
+		params.ticks = 5;
+		params.lifeCycleRadius = "2px";
+	}
+
 	params.uiColour = {
 		veryLightGrey: "#ddd",
 		lightGrey: "#999",
@@ -49,7 +59,7 @@ function buildParams () {
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
 	params.scaleYAxis = false;
-	params.lifeCycleRadius = "4px";
+
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -69,7 +79,7 @@ function buildParams () {
 					.clamp(true);
 
 	params.projection = d3.geo.mercator()
-						.scale(650)
+						.scale(params.mapScale)
     					.translate([(params.mapWidth * 0.5), (params.mapHeight * 0.6)]);
 
 	params.path = d3.geo.path()

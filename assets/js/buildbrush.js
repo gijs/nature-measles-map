@@ -4,12 +4,12 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 	this.brush = d3.svg.brush()
 					.x(this.params.brushScale)
-					.extent(0, 0)
+					.extent([0, 0])
 					.on("brush", brushed);
 
 	this.rangeSvg = d3.select(this.params.brushTarget).append("svg")
 						.attr("width", this.params.brushWidth + this.params.brushMargin.left + this.params.brushMargin.right)
-						.attr("height", this.params.brushHeight)
+						.attr("height", this.params.brushHeight + this.params.brushMargin.top + this.params.brushMargin.bottom)
 					  .append("g")
 						.attr("transform", "translate(" + this.params.brushMargin.left + "," + this.params.brushMargin.top + ")");
 
@@ -18,7 +18,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 						.orient("bottom")
 						.tickFormat(function(d) { return d; })
 						.tickSize(0)
-						.ticks(20)
+						.ticks(this.params.ticks)
 						.tickPadding(12);
 
 	this.rangeSvg.append("g")
@@ -31,7 +31,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 	this.slider = this.rangeSvg.append("g")
     	.attr("class", "slider")
-    	.call(this.brush);
+    	.call(self.brush);
 
 	this.slider.selectAll(".extent,.resize")
     	.remove();
@@ -45,7 +45,7 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 		var value = self.brush.extent()[0];
 
 		if (d3.event.sourceEvent) { /* not a programmatic event*/
-			value = self.params.brushScale.invert(d3.mouse(this)[0]);
+			value = Math.floor(self.params.brushScale.invert(d3.mouse(this)[0]));
 			self.brush.extent([value, value]);
 		}
 
