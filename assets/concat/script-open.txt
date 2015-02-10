@@ -10,7 +10,7 @@
 	}, 60);
 })();
 </script>
-<!--<![endif]-->
+<![endif]-->
 
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">

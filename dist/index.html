@@ -238,7 +238,7 @@
 	}, 60);
 })();
 </script>
-<!--<![endif]-->
+<![endif]-->
 
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">
@@ -302,13 +302,12 @@ function buildParams (num, year) {
 
 	params.mapScale = 100;
 	params.ticks = 20;
-	params.lifeCycleRadius = "4px";
+	params.lifeCycleRadius = "3px";
 	params.mapRatio = 0.5;
 
 	if ( contentWidth < 450 ) {
 		params.mapScale = 50;
 		params.ticks = 5;
-		params.lifeCycleRadius = "2px";
 		params.mapRatio = 0.8;
 	}
 
@@ -360,7 +359,7 @@ function buildParams (num, year) {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
-	params.scaleYAxis = true;
+	params.scaleYAxis = d3.select("#scale-y-axis").property("checked");
 
 
 	params.brushScale = d3.scale.linear()
