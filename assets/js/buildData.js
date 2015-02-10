@@ -12,6 +12,8 @@ BuildWidget.prototype.buildData = function() {
 		this.params.selectedMaxArray.pop();
 	}
 
+	this.params.selectedID = this.features[this.params.selectedFeature].id;
+
 	if ( this.features[this.params.selectedFeature].vaccineData ) {
 		
 		for (var j = 1980; j < 2014; j++) {
@@ -36,7 +38,7 @@ BuildWidget.prototype.buildData = function() {
 			}
 		}
 
-		this.params.selectedID = this.features[this.params.selectedFeature].id;
+		
 		/* Only redraw the graph is the country has some case data */
 		this.pubsub.publish("newDataReady");
 	}

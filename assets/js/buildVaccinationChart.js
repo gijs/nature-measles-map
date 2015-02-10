@@ -3,11 +3,12 @@ BuildWidget.prototype.buildVaccinationChart = function() {
 
 	this.vaccinationSvg = d3.select(this.params.vaccinationChartTarget).append("svg")
 		.attr("width", this.params.lifeCycleWidth + this.params.lifeCycleMargin.left + this.params.lifeCycleMargin.right)
-		.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom)
-	  .append("g")
+		.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom);
+	
+	this.vaccinationSvgG = this.vaccinationSvg.append("g")
 		.attr("transform", "translate(" + this.params.lifeCycleMargin.left + "," + this.params.lifeCycleMargin.top + ")");
 
-	this.vaccinationSvg.append("g")
+	this.vaccineWhiteBox = this.vaccinationSvgG.append("g")
 		.attr("class","white-box")
 	  .append("rect")
 		.attr("x", 0)
@@ -40,12 +41,12 @@ BuildWidget.prototype.buildVaccinationChart = function() {
 		.x(function(d) { return self.xScaleVaccination(d.date); })
 		.y(function(d) { return self.yScaleVaccination(d.rate); });
 
-	this.vaccinationSvg.append("g")
+	this.vaccinationSvgG.append("g")
 	    .attr("class", "x axis")
 	    .attr("transform", "translate(0," + this.params.lifeCycleHeight + ")")
 	    .call(this.xAxisVaccination);
 
-	this.vaccinationSvg.append("g")
+	this.vaccinationSvgG.append("g")
 	    .attr("class", "y axis")
 	    .call(this.yAxisVaccination)
 	  .append("text")
@@ -55,7 +56,7 @@ BuildWidget.prototype.buildVaccinationChart = function() {
 	    .style("text-anchor", "middle")
 	    .text(this.params.key.keyHeadVaccination);
 
-	this.vaccinationPath = this.vaccinationSvg.append("path")
+	this.vaccinationPath = this.vaccinationSvgG.append("path")
 		.data([this.params.selectedVaccinationData, function (d) {
 			return d.date;
 		}])
@@ -65,7 +66,7 @@ BuildWidget.prototype.buildVaccinationChart = function() {
 		.attr("stroke-width", self.params.lifeCycleRadius)
 		.attr("d", this.vaccinationLine);
 
-	this.vaccinationCircles = this.vaccinationSvg.append("g");
+	this.vaccinationCircles = this.vaccinationSvgG.append("g");
 
 	this.vaccinationCircles.selectAll("circle")
 		.data(this.params.selectedVaccinationData, function (d) {

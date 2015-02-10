@@ -1,4 +1,4 @@
-function buildParams () {
+function buildParams (num, year) {
 	var params = {};
 
 	var contentWidth = jQuery("#content").width();
@@ -8,7 +8,7 @@ function buildParams () {
 	params.lifeCycleRadius = "4px";
 	params.mapRatio = 0.5;
 
-	if ( contentWidth < 310 ) {
+	if ( contentWidth < 450 ) {
 		params.mapScale = 50;
 		params.ticks = 5;
 		params.lifeCycleRadius = "2px";
@@ -35,12 +35,10 @@ function buildParams () {
 	};
 
 	/* Life cycle data */
-	params.selectedCountry = "United States of America (the)";
-	params.selectedID = "USA";
 	params.selectedData = [];
 	params.selectedVaccinationData = [];
 	params.selectedMaxArray = [];
-	params.selectedFeature = 202;
+	params.selectedFeature = num;
 
 	/* Target ids */
 	params.mapTarget = "#chart";
@@ -75,7 +73,7 @@ function buildParams () {
 
 	params.format = d3.format("0,000");
 
-	params.year = "1980";
+	params.year = year;
 
 	params.duration = 100;
 

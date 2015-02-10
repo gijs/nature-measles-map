@@ -1,7 +1,27 @@
 BuildWidget.prototype.updateVaccinationChart = function() {
 	var self = this;
 
+	this.vaccinationSvg.attr("width", this.params.lifeCycleWidth + this.params.lifeCycleMargin.left + this.params.lifeCycleMargin.right)
+					.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom);
+
+	this.vaccineWhiteBox.attr("width", this.params.lifeCycleWidth)
+							.attr("height", this.params.lifeCycleHeight);
+
+	this.yAxisVaccination.tickSize(-this.params.lifeCycleWidth, 0);
+
+	this.xScaleVaccination.range([0, this.params.lifeCycleWidth]);
+
+	this.vaccinationSvgG.select(".x").call(this.xAxisVaccination);
+
+	this.vaccinationLine.x(function(d) { return self.xScaleVaccination(d.date); })
+		.y(function(d) { return self.yScaleVaccination(d.rate); });
+
 	if ( this.features[this.params.selectedFeature].vaccineData ) {
+
+		this.vaccinationSvgG.select(".y")
+			.transition()
+			.duration(this.params.duration)
+			.call(this.yAxisVaccination);
 			
 		this.vaccinationPath
 			.data([this.params.selectedVaccinationData, function (d) {

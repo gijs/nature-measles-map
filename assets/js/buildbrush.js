@@ -9,8 +9,9 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 	this.rangeSvg = d3.select(this.params.brushTarget).append("svg")
 						.attr("width", this.params.brushWidth + this.params.brushMargin.left + this.params.brushMargin.right)
-						.attr("height", this.params.brushHeight + this.params.brushMargin.top + this.params.brushMargin.bottom)
-					  .append("g")
+						.attr("height", this.params.brushHeight + this.params.brushMargin.top + this.params.brushMargin.bottom);
+					  
+	this.rangeSvgG = this.rangeSvg.append("g")
 						.attr("transform", "translate(" + this.params.brushMargin.left + "," + this.params.brushMargin.top + ")");
 
 	this.brushAxis = d3.svg.axis()
@@ -21,15 +22,13 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 						.ticks(this.params.ticks)
 						.tickPadding(12);
 
-	this.rangeSvg.append("g")
+	this.brushRangeG = this.rangeSvgG.append("g")
 	    .attr("class", "x axis")
-	    .attr("transform", "translate(0," + this.params.brushHeight / 2 + ")")
-	    .call(this.brushAxis)
-	  .select(".domain")
-	  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-	    .attr("class", "halo");
+	    .attr("transform", "translate(0," + this.params.brushHeight / 2 + ")");
+	
+	this.brushRangeG.call(this.brushAxis);
 
-	this.slider = this.rangeSvg.append("g")
+	this.slider = this.rangeSvgG.append("g")
     	.attr("class", "slider")
     	.call(self.brush);
 
@@ -51,8 +50,20 @@ BuildWidget.prototype.buildBrush = function(first_argument) {
 
 		self.handle.attr("cx", self.params.brushScale(value));
 
-		/* should probably snap to a value */
 		self.params.year = Math.floor(value);
 		self.pubsub.publish("newYearChosen");
 	}
+};
+
+BuildWidget.prototype.updateBrush = function() {
+	var self = this;
+
+	this.rangeSvg.attr("width", this.params.brushWidth + this.params.brushMargin.left + this.params.brushMargin.right)
+			.attr("height", this.params.brushHeight + this.params.brushMargin.top + this.params.brushMargin.bottom);
+
+	this.brushAxis.scale(self.params.brushScale).ticks(this.params.ticks);
+
+	this.brushRangeG.call(this.brushAxis);
+
+	this.slider.call(self.brush);
 };

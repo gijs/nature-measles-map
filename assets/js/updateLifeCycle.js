@@ -3,14 +3,29 @@ BuildWidget.prototype.updateLifeCycle = function() {
 
 	this.selectedCountryLabel.text(this.params.selectedCountry);
 
+	this.lifeCycleSvg.attr("width", this.params.lifeCycleWidth + this.params.lifeCycleMargin.left + this.params.lifeCycleMargin.right)
+					.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom);
+
+	this.lifeCycleWhiteBox.attr("width", this.params.lifeCycleWidth)
+							.attr("height", this.params.lifeCycleHeight);
+
+	this.yAxisLifeCycle.tickSize(-this.params.lifeCycleWidth, 0);
+
+	this.xScaleLifeCycle.range([0, this.params.lifeCycleWidth]);
+
+	this.lifeCycleSvgG.select(".x").call(this.xAxisLifeCycle);
+
+	this.line.x(function(d) { return self.xScaleLifeCycle(d.date); })
+		.y(function(d) { return self.yScaleLifeCycle(d.cases); });
+	
 	if ( this.features[this.params.selectedFeature].caseData ) {
 		if ( this.params.scaleYAxis ) {
 			this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 		} else {
 			this.yScaleLifeCycle.domain([0, 1235000]);
 		}
-
-		this.lifeCycleSvg.select(".y")
+		
+		this.lifeCycleSvgG.select(".y")
 			.transition()
 			.duration(this.params.duration)
 			.call(this.yAxisLifeCycle);

@@ -5,7 +5,7 @@ BuildWidget.prototype.buildMap = function() {
 					.attr("width", this.params.mapWidth)
 					.attr("height", this.params.mapHeight);
 				  
-	this.svg.append("defs").append("svg:clipPath")
+	this.defs = this.svg.append("defs").append("svg:clipPath")
 					.attr("id", "clip")
 				  .append("svg:rect")
 					.attr("x", 0)

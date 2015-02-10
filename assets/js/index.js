@@ -101,7 +101,7 @@
 					}
 				}
 
-				var params = buildParams();
+				var params = buildParams(202,"1980");
 
 				var measlesMap = new BuildWidget(params, features, worldData);
 				extendObject(measlesMap.pubsub);
@@ -116,7 +116,7 @@
 				measlesMap.buildBrush();
 				measlesMap.buildKey();
 				measlesMap.buildCheckbox();
-				measlesMap.buildData(features[measlesMap.params.selectedFeature]);
+				measlesMap.buildData();
 				measlesMap.buildTooltip();
 
 				d3.select("#toggle-cases").on("click", function() {
@@ -129,15 +129,17 @@
 					measlesMap.pubsub.publish("newKeyChosen");
 				});
 
-				// window.onresize = resize;
+				window.onresize = resize;
 
-				// function resize() {
-				// 	console.log("resize event detected!");
-				// 	params = buildParams();
-				// 	measlesMap.params = params;
-				// 	measlesMap.updateMap();
-				// 	measlesMap.updateLifeCycle();
-				// }
+				function resize() {
+					var myId = measlesMap.params.selectedFeature;
+					var myYear = measlesMap.params.year;
+					params = buildParams(myId, myYear);
+					measlesMap.params = params;
+					measlesMap.updateMap();
+					measlesMap.buildData();
+					measlesMap.updateBrush();
+				}
 			}
 		}, function () {
 			$(".widget-error-message").css("display","block");

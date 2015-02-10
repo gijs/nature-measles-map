@@ -5,11 +5,12 @@ BuildWidget.prototype.buildLifeCycle = function() {
 
 	this.lifeCycleSvg = d3.select(this.params.lifeCycleChartTarget).append("svg")
 		.attr("width", this.params.lifeCycleWidth + this.params.lifeCycleMargin.left + this.params.lifeCycleMargin.right)
-		.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom)
-	  .append("g")
-		.attr("transform", "translate(" + this.params.lifeCycleMargin.left + "," + this.params.lifeCycleMargin.top + ")");
+		.attr("height", this.params.lifeCycleHeight + this.params.lifeCycleMargin.top + this.params.lifeCycleMargin.bottom);
+	
+	this.lifeCycleSvgG = this.lifeCycleSvg.append("g")
+							.attr("transform", "translate(" + this.params.lifeCycleMargin.left + "," + this.params.lifeCycleMargin.top + ")");
 
-	this.lifeCycleSvg.append("g")
+	this.lifeCycleWhiteBox = this.lifeCycleSvgG.append("g")
 		.attr("class","white-box")
 	  .append("rect")
 		.attr("x", 0)
@@ -47,12 +48,12 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.x(function(d) { return self.xScaleLifeCycle(d.date); })
 		.y(function(d) { return self.yScaleLifeCycle(d.cases); });
 
-	this.lifeCycleSvg.append("g")
+	this.lifeCycleSvgG.append("g")
 	    .attr("class", "x axis")
 	    .attr("transform", "translate(0," + this.params.lifeCycleHeight + ")")
 	    .call(this.xAxisLifeCycle);
 
-	this.lifeCycleSvg.append("g")
+	this.lifeCycleSvgG.append("g")
 	    .attr("class", "y axis")
 	    .call(this.yAxisLifeCycle)
 	  .append("text")
@@ -62,7 +63,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 	    .style("text-anchor", "middle")
 	    .text(this.params.key.keyHead);
 
-	this.lifeCycleLine = this.lifeCycleSvg.append("path")
+	this.lifeCycleLine = this.lifeCycleSvgG.append("path")
 		.data([this.params.selectedData, function (d) {
 			return d.date;
 		}])
@@ -72,7 +73,7 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.attr("stroke-width", self.params.lifeCycleRadius)
 		.attr("d", this.line);
 
-	this.lifeCycleCircles = this.lifeCycleSvg.append("g");
+	this.lifeCycleCircles = this.lifeCycleSvgG.append("g");
 
 	this.lifeCycleCircles.selectAll("circle")
 		.data(this.params.selectedData, function (d) {

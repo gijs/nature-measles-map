@@ -1,6 +1,12 @@
 BuildWidget.prototype.updateMap = function() {
 	var self = this;
 
+	this.svg.attr("width", this.params.mapWidth)
+			.attr("height", this.params.mapHeight);
+
+	this.defs.attr("width", this.params.mapWidth)
+			.attr("height", this.params.mapHeight);
+
 	var year = self.params.year.toString();
 
 	this.countriesSvg.selectAll("path")
