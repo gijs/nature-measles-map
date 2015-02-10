@@ -76,7 +76,11 @@ Move both files into our build directory
 	cp ref/vaccination-by-who-region.csv build/data/
 	cp ref/cases-by-who-region.csv build/data/
 
+## Local testing 
 
+Open Chrome on OSX with cross origin security disabled
+
+	open -a Google\ Chrome --args --disable-web-security
 
 
 
