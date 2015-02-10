@@ -66,4 +66,6 @@ BuildWidget.prototype.updateBrush = function() {
 	this.brushRangeG.call(this.brushAxis);
 
 	this.slider.call(self.brush);
+
+	this.handle.attr("cx", this.params.brushScale(this.params.year));
 };
