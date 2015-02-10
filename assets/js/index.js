@@ -1,6 +1,5 @@
 (function() {
 	var init = function($) {
-
 		var casesURL = "data/cases-by-who-region.csv";
 		var vaccinationURL = "data/vaccination-by-who-region.csv";
 		var countriesURL = "data/countries.json";
@@ -26,7 +25,6 @@
 
 			d3.csv(casesURL, function (error, d) {
 				if (error) {
-					$(".widget-status-message").css("display","none");
 					$(".widget-error-message").css("display","block");
 				} else {
 					caseData = d;
@@ -36,7 +34,6 @@
 
 			d3.csv(vaccinationURL, function (error, d) {
 				if (error) {
-					$(".widget-status-message").css("display","none");
 					$(".widget-error-message").css("display","block");
 				} else {
 					vaccinationData = d;
@@ -47,7 +44,6 @@
 			d3.json(countriesURL, function(error, world) {
 
 				if (error) {
-					$(".widget-status-message").css("display","none");
 					$(".widget-error-message").css("display","block");
 				} else {
 					worldData = world;
@@ -57,7 +53,6 @@
 			});
 
 			function buildGraphic () {
-				$(".widget-status-message").css("display","none");
 				$(".outerwrapper").css("display","block");
 
 				/* Convert the text numbers into real numbers */
@@ -133,7 +128,19 @@
 					measlesMap.params.showCases = false;
 					measlesMap.pubsub.publish("newKeyChosen");
 				});
+
+				// window.onresize = resize;
+
+				// function resize() {
+				// 	console.log("resize event detected!");
+				// 	params = buildParams();
+				// 	measlesMap.params = params;
+				// 	measlesMap.updateMap();
+				// 	measlesMap.updateLifeCycle();
+				// }
 			}
+		}, function () {
+			$(".widget-error-message").css("display","block");
 		});
 
 	/* End of active code */
@@ -144,9 +151,8 @@
 			/*	jQuery ready test for svg */
 			if ( document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image','1.1') ) {
 				init(jQuery);
-				return;
 			} else {
-				return;	
+				jQuery(".widget-status-message").css("display","block");
 			}
 		} else {
 			setTimeout(arguments.callee, 60);

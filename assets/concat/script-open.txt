@@ -1,2 +1,16 @@
+<!--[if lte IE 8]>
+<script type="text/javascript">
+(function() {
+	setTimeout(function() {
+		if (typeof jQuery !== 'undefined') {
+			jQuery(".widget-status-message").css("display","block");
+		} else {
+			setTimeout(arguments.callee, 60);
+		}
+	}, 60);
+})();
+</script>
+<!--<![endif]-->
+
 <!--[if gt IE 8]><!-->
 <script type="text/javascript">
