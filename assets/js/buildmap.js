@@ -28,6 +28,9 @@ BuildWidget.prototype.buildMap = function() {
 		.data(this.features)
 		.enter().append("path")
 		.attr("d", this.params.path)
+		.attr("id", function (d) {
+			return d.id;
+		})
 		.attr("fill", function (d) {
 			if ( d.caseData ) {
 				if ( self.params.showCases ) {

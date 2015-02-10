@@ -12,7 +12,7 @@ BuildWidget.prototype.updateMap = function() {
 					} else {
 						return self.params.color(d.caseData[0][self.params.year]);
 					}
-				} else if ( d.vaccineData ) {
+				} else if ( d.vaccineData !== undefined ) {
 					if ( d.vaccineData[0][self.params.year] === "noData") {
 						return self.params.uiColour.noData;
 					} else {
@@ -23,6 +23,11 @@ BuildWidget.prototype.updateMap = function() {
 				return self.params.uiColour.noData;
 			}
 		});
+
+	/* Very ugly fix to get around problem with Montenegro */
+	if (this.countriesSvg.select("path#MKD").attr("fill") === null) {
+		this.countriesSvg.select("path#MKD").attr("fill", self.params.uiColour.noData);
+	} 
 
 	this.yearLabel.text(year);
 };
