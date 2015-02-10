@@ -23,6 +23,29 @@
   padding: 0 15px;
   margin: 0;
 }
+.outerwrapper .toggle-buttons {
+  margin: 10px 10px;
+}
+.outerwrapper .toggle-buttons button {
+  display: inline-block;
+  background-color: #eee;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: 1px solid #fff;
+  transition: background-color 0.2s ease;
+}
+.outerwrapper .toggle-buttons button.selected {
+  border: 1px solid #666;
+  background-color: #ccc;
+}
+.outerwrapper .toggle-buttons button:hover {
+  background-color: #aaa;
+}
+.outerwrapper .toggle-buttons button:active {
+  background-color: #666;
+}
 .outerwrapper .chart {
   position: relative;
   background-color: #65A6D3;

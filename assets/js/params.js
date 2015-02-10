@@ -21,12 +21,13 @@ function buildParams () {
 		grey: "#666",
 		darkGrey: "#333",
 		noData: "#ccc",
-		lineColour: "#45A72C",
-		vaccinationLineColour: "#006DB2"	
+		lineColour: "#cb181d",
+		vaccinationLineColour: "#238b45"	
 	};
 
 	params.key = {
 		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
+		vaccinationRange: [10,20,30,40,50,60,70,80,90,100],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
 		keyHead: "Cases of measles",
@@ -64,7 +65,7 @@ function buildParams () {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
-	params.scaleYAxis = false;
+	params.scaleYAxis = true;
 
 
 	params.brushScale = d3.scale.linear()
@@ -78,7 +79,7 @@ function buildParams () {
 
 	params.duration = 100;
 
-	params.showCases = false;
+	params.showCases = true;
 
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.linear()
@@ -88,7 +89,7 @@ function buildParams () {
 
 	params.vaccinationColor = d3.scale.linear()
 								.range(["#ffffff","#f7fcf5","#e5f5e0","#c7e9c0","#a1d99b","#74c476","#41ab5d","#238b45","#006d2c","#00441b"])
-								.domain([10,20,30,40,50,60,70,80,90,100])
+								.domain(params.key.vaccinationRange)
 								.clamp(true);
 
 	params.projection = d3.geo.mercator()

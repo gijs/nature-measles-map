@@ -6,7 +6,7 @@ BuildWidget.prototype.updateMap = function() {
 	this.countriesSvg.selectAll("path")
 		.attr("fill", function (d) {
 			if ( d.caseData ) {
-				if ( self.params.showCase ) {
+				if ( self.params.showCases ) {
 					if ( d.caseData[0][self.params.year] === "noData") {
 						return self.params.uiColour.noData;
 					} else {

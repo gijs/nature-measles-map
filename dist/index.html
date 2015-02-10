@@ -24,6 +24,29 @@
   padding: 0 15px;
   margin: 0;
 }
+.outerwrapper .toggle-buttons {
+  margin: 10px 10px;
+}
+.outerwrapper .toggle-buttons button {
+  display: inline-block;
+  background-color: #eee;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  border: 1px solid #fff;
+  transition: background-color 0.2s ease;
+}
+.outerwrapper .toggle-buttons button.selected {
+  border: 1px solid #666;
+  background-color: #ccc;
+}
+.outerwrapper .toggle-buttons button:hover {
+  background-color: #aaa;
+}
+.outerwrapper .toggle-buttons button:active {
+  background-color: #666;
+}
 .outerwrapper .chart {
   position: relative;
   background-color: #65A6D3;
@@ -169,6 +192,11 @@
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur molestiae voluptas deleniti, velit a, culpa reprehenderit eaque aut repellendus. Hic vero voluptates magni voluptas perspiciatis quos, exercitationem suscipit reiciendis rem.</p>
 	</div>
 	
+	<div class="toggle-buttons">
+		<button id="toggle-cases">Cases of measles</button>
+		<button id="toggle-vaccination">Vaccination rate %</button>
+	</div>
+
 	<div class="key" id="measles-scale"></div>
 
 	<div id="chart" class="chart"></div>
@@ -179,7 +207,7 @@
 		
 		<div class="life-cycle-header">
 			<p class="country" id="selected-country"></p>
-			<label>Scale y axis: <input id="scale-y-axis" type="checkbox"></label>
+			<label>Scale y axis: <input id="scale-y-axis" type="checkbox" checked></label>
 		</div>
 		
 		<div class="life-cycle-chart" id="life-cycle-chart">
@@ -273,12 +301,13 @@ function buildParams () {
 		grey: "#666",
 		darkGrey: "#333",
 		noData: "#ccc",
-		lineColour: "#45A72C",
-		vaccinationLineColour: "#006DB2"	
+		lineColour: "#cb181d",
+		vaccinationLineColour: "#238b45"	
 	};
 
 	params.key = {
 		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
+		vaccinationRange: [10,20,30,40,50,60,70,80,90,100],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
 		keyHead: "Cases of measles",
@@ -316,7 +345,7 @@ function buildParams () {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
-	params.scaleYAxis = false;
+	params.scaleYAxis = true;
 
 
 	params.brushScale = d3.scale.linear()
@@ -330,7 +359,7 @@ function buildParams () {
 
 	params.duration = 100;
 
-	params.showCases = false;
+	params.showCases = true;
 
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.linear()
@@ -340,7 +369,7 @@ function buildParams () {
 
 	params.vaccinationColor = d3.scale.linear()
 								.range(["#ffffff","#f7fcf5","#e5f5e0","#c7e9c0","#a1d99b","#74c476","#41ab5d","#238b45","#006d2c","#00441b"])
-								.domain([10,20,30,40,50,60,70,80,90,100])
+								.domain(params.key.vaccinationRange)
 								.clamp(true);
 
 	params.projection = d3.geo.mercator()
@@ -385,7 +414,7 @@ BuildWidget.prototype.buildMap = function() {
 		.attr("d", this.params.path)
 		.attr("fill", function (d) {
 			if ( d.caseData ) {
-				if ( self.params.showCase ) {
+				if ( self.params.showCases ) {
 					if ( d.caseData[0][self.params.year] === "noData") {
 						return self.params.uiColour.noData;
 					} else {
@@ -825,32 +854,58 @@ BuildWidget.prototype.buildData = function() {
 BuildWidget.prototype.buildKey = function() {
 	var self = this;
 
-	this.key = d3.select(this.params.keyTarget);
+	if ( !this.key ) {
+		this.key = d3.select(this.params.keyTarget);
+	}
 
-	this.key.append("h3").text(this.params.key.keyHead);
+	this.key.html("");
+
+	if ( this.params.showCases ) {
+		d3.select("#toggle-cases").classed("selected",true);
+		d3.select("#toggle-vaccination").classed("selected",false);
+	} else {
+		d3.select("#toggle-cases").classed("selected",false);
+		d3.select("#toggle-vaccination").classed("selected",true);
+	}
 
 	this.list = this.key.append("ul");
 
-	this.list.selectAll("li")
-			.data(this.params.key.keyRange)
-			.enter()
-		  .append("li")
-			.text(function (d,i) {
-				if (i === (self.params.key.keyRange.length - 1) ) {
-					return "≥ " + self.params.format(d);
-				} else if (i === 0) {
-					return "≤ " + self.params.format(d);
-				} else {
-					return self.params.format(d);
-				}
-			})
-			.style("border-top-color", function (d) {
-				return self.params.color(d);
-			});
+	if ( this.params.showCases ) { 
+		this.list.selectAll("li")
+				.data(this.params.key.keyRange)
+				.enter()
+			  .append("li")
+				.text(function (d,i) {
+					if (i === (self.params.key.keyRange.length - 1) ) {
+						return "≥ " + self.params.format(d);
+					} else if (i === 0) {
+						return "≤ " + self.params.format(d);
+					} else {
+						return self.params.format(d);
+					}
+				})
+				.style("border-top-color", function (d) {
+					return self.params.color(d);
+				});
+	} else {
+		this.list.selectAll("li")
+				.data(this.params.key.vaccinationRange)
+				.enter()
+			  .append("li")
+				.text(function (d,i) {
+					return self.params.format(d) + "%";
+				})
+				.style("border-top-color", function (d) {
+					return self.params.vaccinationColor(d);
+				});
+	}
+
 		  
 	this.list.append("li")
 		.text("No data")
 		.style("border-top-color", self.params.uiColour.noData);
+
+
 };
 
 BuildWidget.prototype.buildTooltip = function (selection) {
@@ -931,7 +986,7 @@ BuildWidget.prototype.updateMap = function() {
 	this.countriesSvg.selectAll("path")
 		.attr("fill", function (d) {
 			if ( d.caseData ) {
-				if ( self.params.showCase ) {
+				if ( self.params.showCases ) {
 					if ( d.caseData[0][self.params.year] === "noData") {
 						return self.params.uiColour.noData;
 					} else {
@@ -974,6 +1029,10 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 	}
 };
 
+BuildWidget.prototype.keyChosen = function(topic, func, parent) {
+	this.parent.buildKey();
+	this.parent.updateMap();
+};
 (function() {
 	var init = function($) {
 
@@ -1091,6 +1150,7 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 				measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
 				measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
 				measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
+				measlesMap.pubsub.subscribe( "newKeyChosen", measlesMap.keyChosen, measlesMap );
 
 				/*	Call functions to bulid the map, brush, checkbox, data, linegraph and tooltip */
 				measlesMap.buildMap();
@@ -1099,6 +1159,16 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 				measlesMap.buildCheckbox();
 				measlesMap.buildData(features[measlesMap.params.selectedFeature]);
 				measlesMap.buildTooltip();
+
+				d3.select("#toggle-cases").on("click", function() {
+					measlesMap.params.showCases = true;
+					measlesMap.pubsub.publish("newKeyChosen");
+				});
+
+				d3.select("#toggle-vaccination").on("click", function() {
+					measlesMap.params.showCases = false;
+					measlesMap.pubsub.publish("newKeyChosen");
+				});
 			}
 		});
 

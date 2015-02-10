@@ -115,6 +115,7 @@
 				measlesMap.pubsub.subscribe( "newYearChosen", measlesMap.yearChosen, measlesMap );
 				measlesMap.pubsub.subscribe( "newCountryChosen", measlesMap.countryChosen, measlesMap );
 				measlesMap.pubsub.subscribe( "newDataReady", measlesMap.dataReady, measlesMap );
+				measlesMap.pubsub.subscribe( "newKeyChosen", measlesMap.keyChosen, measlesMap );
 
 				/*	Call functions to bulid the map, brush, checkbox, data, linegraph and tooltip */
 				measlesMap.buildMap();
@@ -123,6 +124,16 @@
 				measlesMap.buildCheckbox();
 				measlesMap.buildData(features[measlesMap.params.selectedFeature]);
 				measlesMap.buildTooltip();
+
+				d3.select("#toggle-cases").on("click", function() {
+					measlesMap.params.showCases = true;
+					measlesMap.pubsub.publish("newKeyChosen");
+				});
+
+				d3.select("#toggle-vaccination").on("click", function() {
+					measlesMap.params.showCases = false;
+					measlesMap.pubsub.publish("newKeyChosen");
+				});
 			}
 		});
 

@@ -19,3 +19,8 @@ BuildWidget.prototype.dataReady = function(topic, func, parent) {
 		this.parent.buildVaccinationChart();
 	}
 };
+
+BuildWidget.prototype.keyChosen = function(topic, func, parent) {
+	this.parent.buildKey();
+	this.parent.updateMap();
+};

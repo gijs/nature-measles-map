@@ -27,6 +27,35 @@
 		}
 	}
 
+	.toggle-buttons {
+		margin: 10px 10px;
+
+		button {
+			display: inline-block;
+			background-color: #eee;
+			border: none;
+			padding: 10px;
+			border-radius: 4px;
+			box-sizing: border-box;
+			border: 1px solid #fff;
+
+			transition: background-color 0.2s ease;
+
+			&.selected {
+				border: 1px solid #666;
+				background-color: #ccc;
+			}
+
+			&:hover {
+				background-color: #aaa;
+			}
+
+			&:active {
+				background-color: #666;
+			}
+		}
+	}
+
 	.chart {
 		position: relative;
 		background-color: #65A6D3;
