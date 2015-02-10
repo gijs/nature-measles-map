@@ -1,6 +1,4 @@
 BuildWidget.prototype.buildData = function() {
-	this.params.selectedID = this.features[this.params.selectedFeature].id;
-
 	/*	Remove all the old objects from the arrays */
 	while ( this.params.selectedData.length > 0 ) {
 		this.params.selectedData.pop();
@@ -12,6 +10,18 @@ BuildWidget.prototype.buildData = function() {
 
 	while ( this.params.selectedMaxArray.length > 0 ) {
 		this.params.selectedMaxArray.pop();
+	}
+
+	if ( this.features[this.params.selectedFeature].vaccineData ) {
+		
+		for (var j = 1980; j < 2014; j++) {
+			if ( this.features[this.params.selectedFeature].vaccineData[0][j] !== "noData" ) {
+				var myVaccineObject = {};
+				myVaccineObject.date = j; 
+				myVaccineObject.rate = this.features[this.params.selectedFeature].vaccineData[0][j];
+				this.params.selectedVaccinationData.push(myVaccineObject);
+			}
+		}
 	}
 
 	if ( this.features[this.params.selectedFeature].caseData ) {
@@ -26,20 +36,8 @@ BuildWidget.prototype.buildData = function() {
 			}
 		}
 
+		this.params.selectedID = this.features[this.params.selectedFeature].id;
+		/* Only redraw the graph is the country has some case data */
+		this.pubsub.publish("newDataReady");
 	}
-
-	if ( this.features[this.params.selectedFeature].vaccineData ) {
-		
-		for (var j = 1980; j < 2014; j++) {
-			if ( this.features[this.params.selectedFeature].vaccineData[0][j] !== "noData" ) {
-				var myVaccineObject = {};
-				myVaccineObject.date = j; 
-				myVaccineObject.rate = this.features[this.params.selectedFeature].vaccineData[0][j];
-				this.params.selectedVaccinationData.push(myVaccineObject);
-			}
-		}
-
-	}
-
-	this.pubsub.publish("newDataReady");
 };
