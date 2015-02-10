@@ -141,9 +141,10 @@
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
-.outerwrapper .info-box p {
+.outerwrapper .info-box .life-cycle-header p {
   padding: 0;
   margin: 0;
+  font-weight: bold;
 }
 .outerwrapper .info-box svg {
   margin: 0 0 10px 0;
@@ -163,6 +164,7 @@
 }
 .outerwrapper .info-box .widget-tooltip p {
   padding: 0;
+  margin: 0;
 }
 .outerwrapper .info-box .widget-tooltip span {
   font-weight: bold;
@@ -212,13 +214,13 @@
 		
 		<div class="life-cycle-chart" id="life-cycle-chart">
 			<div class="widget-tooltip hidden" id="widget-tooltip">
-				<p id="circle-cases"></p>
+				<p id="life-cycle-cases"></p>
 			</div>
 		</div>
 
 		<div class="vaccination-chart" id="vaccination-chart">
 			<div class="widget-tooltip hidden" id="vaccination-tooltip">
-				<p id="circle-vaccination"></p>
+				<p id="vaccination-cases"></p>
 			</div>
 		</div>
 	</div>
@@ -918,7 +920,7 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 		.on("mouseover", function (d) {
 			var myCircle = d3.select(this);
 
-			d3.select("#circle-cases").text(self.params.format(d.cases) + " cases");
+			d3.select("#life-cycle-cases").text(d.date + ": " + self.params.format(d.cases) + " cases");
 
 			var tooltipWidth = parseInt(d3.select("#widget-tooltip").style("padding-left"),10) + parseInt(d3.select("#widget-tooltip").style("width"),10) + parseInt(d3.select("#widget-tooltip").style("padding-right"),10);
 
@@ -942,7 +944,7 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 		.on("mouseover", function (d) {
 			var myCircle = d3.select(this);
 
-			d3.select("#circle-vaccination").text(self.params.format(d.rate) + " %");
+			d3.select("#vaccination-cases").text(d.date + ": " + self.params.format(d.rate) + " %");
 
 			var tooltipWidth = parseInt(d3.select("#vaccination-tooltip").style("padding-left"),10) + parseInt(d3.select("#vaccination-tooltip").style("width"),10) + parseInt(d3.select("#vaccination-tooltip").style("padding-right"),10);
 

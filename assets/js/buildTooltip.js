@@ -5,7 +5,7 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 		.on("mouseover", function (d) {
 			var myCircle = d3.select(this);
 
-			d3.select("#circle-cases").text(self.params.format(d.cases) + " cases");
+			d3.select("#life-cycle-cases").text(d.date + ": " + self.params.format(d.cases) + " cases");
 
 			var tooltipWidth = parseInt(d3.select("#widget-tooltip").style("padding-left"),10) + parseInt(d3.select("#widget-tooltip").style("width"),10) + parseInt(d3.select("#widget-tooltip").style("padding-right"),10);
 
@@ -29,7 +29,7 @@ BuildWidget.prototype.buildTooltip = function (selection) {
 		.on("mouseover", function (d) {
 			var myCircle = d3.select(this);
 
-			d3.select("#circle-vaccination").text(self.params.format(d.rate) + " %");
+			d3.select("#vaccination-cases").text(d.date + ": " + self.params.format(d.rate) + " %");
 
 			var tooltipWidth = parseInt(d3.select("#vaccination-tooltip").style("padding-left"),10) + parseInt(d3.select("#vaccination-tooltip").style("width"),10) + parseInt(d3.select("#vaccination-tooltip").style("padding-right"),10);
 
