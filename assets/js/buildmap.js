@@ -30,12 +30,19 @@ BuildWidget.prototype.buildMap = function() {
 		.attr("d", this.params.path)
 		.attr("fill", function (d) {
 			if ( d.caseData ) {
-				if ( d.caseData[0][self.params.year] === "noData") {
-					return self.params.uiColour.noData;
-				} else {
-					return self.params.color(d.caseData[0][self.params.year]);
+				if ( self.params.showCase ) {
+					if ( d.caseData[0][self.params.year] === "noData") {
+						return self.params.uiColour.noData;
+					} else {
+						return self.params.color(d.caseData[0][self.params.year]);
+					}
+				} else if ( d.vaccineData ) {
+					if ( d.vaccineData[0][self.params.year] === "noData") {
+						return self.params.uiColour.noData;
+					} else {
+						return self.params.vaccinationColor(d.vaccineData[0][self.params.year]);
+					}					
 				}
-
 			} else {
 				return self.params.uiColour.noData;
 			}

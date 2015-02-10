@@ -78,11 +78,18 @@ function buildParams () {
 
 	params.duration = 100;
 
+	params.showCases = false;
+
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.linear()
 					.range(["#fff5f0","#fee0d2","#fcbba1","#fc9272","#fb6a4a","#ef3b2c","#cb181d","#a50f15","#67000d","#000000"])
 					.domain(params.key.keyRange)
 					.clamp(true);
+
+	params.vaccinationColor = d3.scale.linear()
+								.range(["#ffffff","#f7fcf5","#e5f5e0","#c7e9c0","#a1d99b","#74c476","#41ab5d","#238b45","#006d2c","#00441b"])
+								.domain([10,20,30,40,50,60,70,80,90,100])
+								.clamp(true);
 
 	params.projection = d3.geo.mercator()
 						.scale(params.mapScale)
