@@ -11,6 +11,10 @@
   position: relative;
   border: 1px solid #c8c7cf;
   display: none;
+  margin-bottom: 5px;
+}
+.outerwrapper .header {
+  margin: 0px 0px 20px;
 }
 .outerwrapper .header h2 {
   padding: 10px 15px;
@@ -18,7 +22,7 @@
 }
 .outerwrapper .header p {
   padding: 0 15px;
-  margin: 0;
+  margin: 0px 0px 10px;
 }
 .outerwrapper .toggle-buttons {
   margin: 10px 10px;
