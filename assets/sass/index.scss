@@ -157,8 +157,6 @@
 		
 		.life-cycle-header {
 			padding: 15px 15px 5px;
-			display: flex;
-			justify-content: space-between;
 	
 			p {
 				padding: 0;
@@ -167,14 +165,12 @@
 			}
 		}
 
-
 		svg {
 			margin: 0 0 10px 0;
 		}
 
 		.widget-tooltip {
 			position: absolute;
-			// width: 200px;
 			height: auto;
 			padding: 6px 10px 6px 15px;
 			color: #ccc;

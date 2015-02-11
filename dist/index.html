@@ -135,12 +135,6 @@
 }
 .outerwrapper .info-box .life-cycle-header {
   padding: 15px 15px 5px;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
 }
 .outerwrapper .info-box .life-cycle-header p {
   padding: 0;
@@ -215,7 +209,6 @@
 		
 		<div class="life-cycle-header">
 			<p class="country" id="selected-country"></p>
-			<label>Scale y axis: <input id="scale-y-axis" type="checkbox" checked></label>
 		</div>
 		
 		<div class="life-cycle-chart" id="life-cycle-chart">
@@ -366,8 +359,6 @@ function buildParams (num, year) {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
-	params.scaleYAxis = d3.select("#scale-y-axis").property("checked");
-
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])
@@ -576,13 +567,8 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.domain([1980, 2013]);
 
 	this.yScaleLifeCycle = d3.scale.linear()
-		.range([this.params.lifeCycleHeight, 0]);
-
-	if ( this.params.scaleYAxis ) {
-		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
-	} else {
-		this.yScaleLifeCycle.domain([0, 1235000 ]);
-	}
+		.range([this.params.lifeCycleHeight, 0])
+		.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 
 	this.xAxisLifeCycle = d3.svg.axis()
 		.scale(this.xScaleLifeCycle)
@@ -754,11 +740,8 @@ BuildWidget.prototype.updateLifeCycle = function() {
 		.y(function(d) { return self.yScaleLifeCycle(d.cases); });
 	
 	if ( this.features[this.params.selectedFeature].caseData ) {
-		if ( this.params.scaleYAxis ) {
-			this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
-		} else {
-			this.yScaleLifeCycle.domain([0, 1235000]);
-		}
+
+		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 		
 		this.lifeCycleSvgG.select(".y")
 			.transition()
@@ -1050,16 +1033,6 @@ BuildWidget.prototype.hideVaccineTooltip = function () {
 	d3.select("#vaccination-tooltip").classed("hidden", true);
 };
 
-BuildWidget.prototype.buildCheckbox = function() {
-	var self = this;
-	this.checkbox = d3.select(this.params.checkboxTarget);
-
-	this.checkbox.on("change", function() {
-		self.params.scaleYAxis = d3.select(this).property("checked");
-		self.pubsub.publish("newDataReady");
-	});
-};
-
 BuildWidget.prototype.updateMap = function() {
 	var self = this;
 
@@ -1243,7 +1216,6 @@ BuildWidget.prototype.keyChosen = function(topic, func, parent) {
 				measlesMap.buildMap();
 				measlesMap.buildBrush();
 				measlesMap.buildKey();
-				measlesMap.buildCheckbox();
 				measlesMap.buildData();
 				measlesMap.buildTooltip();
 

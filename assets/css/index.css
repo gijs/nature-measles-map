@@ -134,12 +134,6 @@
 }
 .outerwrapper .info-box .life-cycle-header {
   padding: 15px 15px 5px;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
 }
 .outerwrapper .info-box .life-cycle-header p {
   padding: 0;

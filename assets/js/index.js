@@ -115,7 +115,6 @@
 				measlesMap.buildMap();
 				measlesMap.buildBrush();
 				measlesMap.buildKey();
-				measlesMap.buildCheckbox();
 				measlesMap.buildData();
 				measlesMap.buildTooltip();
 

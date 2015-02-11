@@ -24,13 +24,8 @@ BuildWidget.prototype.buildLifeCycle = function() {
 		.domain([1980, 2013]);
 
 	this.yScaleLifeCycle = d3.scale.linear()
-		.range([this.params.lifeCycleHeight, 0]);
-
-	if ( this.params.scaleYAxis ) {
-		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
-	} else {
-		this.yScaleLifeCycle.domain([0, 1235000 ]);
-	}
+		.range([this.params.lifeCycleHeight, 0])
+		.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 
 	this.xAxisLifeCycle = d3.svg.axis()
 		.scale(this.xScaleLifeCycle)

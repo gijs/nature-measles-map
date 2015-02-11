@@ -62,8 +62,6 @@ function buildParams (num, year) {
 	params.lifeCycleMargin = {top: 10, right: 10, bottom: 20, left: 70};
 	params.lifeCycleWidth = contentWidth - params.lifeCycleMargin.left - params.lifeCycleMargin.right - 30;
 	params.lifeCycleHeight = 100;
-	params.scaleYAxis = d3.select("#scale-y-axis").property("checked");
-
 
 	params.brushScale = d3.scale.linear()
 							.domain([1980, 2013])

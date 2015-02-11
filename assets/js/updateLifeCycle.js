@@ -19,11 +19,8 @@ BuildWidget.prototype.updateLifeCycle = function() {
 		.y(function(d) { return self.yScaleLifeCycle(d.cases); });
 	
 	if ( this.features[this.params.selectedFeature].caseData ) {
-		if ( this.params.scaleYAxis ) {
-			this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
-		} else {
-			this.yScaleLifeCycle.domain([0, 1235000]);
-		}
+
+		this.yScaleLifeCycle.domain([0, (d3.max(self.params.selectedData, function(d) { return d.cases; }) * 1.1) ]);
 		
 		this.lifeCycleSvgG.select(".y")
 			.transition()
