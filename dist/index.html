@@ -111,6 +111,7 @@
 }
 .outerwrapper .key ul {
   margin: 0px 15px 0px 5px;
+  padding: 0;
 }
 .outerwrapper .key li {
   display: inline-block;
@@ -1239,17 +1240,17 @@ BuildWidget.prototype.keyChosen = function(topic, func, parent) {
 };
 (function() {
 	var init = function($) {
-		var casesURL = "data/cases-by-who-region.csv";
-		var vaccinationURL = "data/vaccination-by-who-region.csv";
-		var countriesURL = "data/countries.json";
-		var d3URL = "http://d3js.org/d3.v3.min.js";
-		var topojsonURL = "data/topojson.v1.min.js";
+		// var casesURL = "data/cases-by-who-region.csv";
+		// var vaccinationURL = "data/vaccination-by-who-region.csv";
+		// var countriesURL = "data/countries.json";
+		// var d3URL = "http://d3js.org/d3.v3.min.js";
+		// var topojsonURL = "data/topojson.v1.min.js";
 
-		// var casesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/cases-by-who-region.csv";
-		// var vaccinationURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/vaccination-by-who-region.csv";
-		// var countriesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/countries.json";
-		// var d3URL = "http://www.nature.com/widget_assets_polopoly/v518n7538/d3.v3.min.js";
-		// var topojsonURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/topojson.v1.min.js";
+		var casesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/cases-by-who-region.csv";
+		var vaccinationURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/vaccination-by-who-region.csv";
+		var countriesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/countries.json";
+		var d3URL = "http://www.nature.com/widget_assets_polopoly/v518n7538/d3.v3.min.js";
+		var topojsonURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/topojson.v1.min.js";
 
 		$.when( $.getScript(d3URL),
 				$.getScript(topojsonURL)
