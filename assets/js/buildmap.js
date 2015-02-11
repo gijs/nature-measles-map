@@ -18,11 +18,13 @@ BuildWidget.prototype.buildMap = function() {
 	this.countriesSvg = this.clipGroupSvg.append("g").attr("class","country");
 	this.bordersSvg = this.clipGroupSvg.append("g");
 
-	this.svg.call(d3.behavior.zoom()
-			.translate([0, 0])
-			.scale(1)
-			.scaleExtent([1, 8])
-			.on("zoom", zoomed));
+	this.zoom = d3.behavior.zoom()
+					.translate([0, 0])
+					.scale(1)
+					.scaleExtent([this.params.zoomMin, this.params.zoomMax])
+					.on("zoom", zoomed);
+
+	this.svg.call(this.zoom);
 
 	this.countriesSvg.selectAll("path")
 		.data(this.features)
@@ -71,4 +73,5 @@ BuildWidget.prototype.buildMap = function() {
 		self.countriesSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 		self.bordersSvg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
 	}
+
 };

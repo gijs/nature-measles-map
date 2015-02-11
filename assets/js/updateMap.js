@@ -33,7 +33,9 @@ BuildWidget.prototype.updateMap = function() {
 	/* Very ugly fix to get around problem with Montenegro */
 	if (this.countriesSvg.select("path#MKD").attr("fill") === null) {
 		this.countriesSvg.select("path#MKD").attr("fill", self.params.uiColour.noData);
-	} 
+	}
+
+
 
 	this.yearLabel.text(year);
 };

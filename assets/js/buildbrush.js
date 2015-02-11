@@ -1,5 +1,5 @@
 /* http://bl.ocks.org/mbostock/6452972 */
-BuildWidget.prototype.buildBrush = function(first_argument) {
+BuildWidget.prototype.buildBrush = function() {
 	var self = this;
 
 	this.brush = d3.svg.brush()

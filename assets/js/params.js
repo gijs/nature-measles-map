@@ -4,6 +4,8 @@ function buildParams (num, year) {
 	var contentWidth = jQuery("#content").width();
 
 	params.mapScale = 100;
+	params.zoomMin = 1;
+	params.zoomMax = 8;
 	params.ticks = 20;
 	params.lifeCycleRadius = "3px";
 	params.mapRatio = 0.5;
@@ -52,6 +54,7 @@ function buildParams (num, year) {
 	params.mapMargin = {top: 0, right: 15, bottom: 0, left: 15};
 	params.mapWidth = contentWidth  - params.mapMargin.left - params.mapMargin.right;
 	params.mapHeight = (contentWidth * params.mapRatio) - params.mapMargin.top - params.mapMargin.bottom;
+	params.center = [ params.mapWidth / 2, params.mapHeight / 2];
 
 	/*	Brush margin, width and height */
 	params.brushMargin = {top: 0, right: 10, bottom: 0, left: 70};

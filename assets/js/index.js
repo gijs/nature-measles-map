@@ -117,6 +117,7 @@
 				measlesMap.buildKey();
 				measlesMap.buildData();
 				measlesMap.buildTooltip();
+				measlesMap.buildZoom();
 
 				d3.select("#toggle-cases").on("click", function() {
 					measlesMap.params.showCases = true;
