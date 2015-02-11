@@ -22,6 +22,7 @@
 			var vaccinationData;
 			var worldData;
 			var remaining = 3;
+			var width = $(window).width();
 
 			d3.csv(casesURL, function (error, d) {
 				if (error) {
@@ -101,7 +102,7 @@
 					}
 				}
 
-				var params = buildParams(202,"1980");
+				var params = buildParams(202,"1980",true);
 
 				var measlesMap = new BuildWidget(params, features, worldData);
 				extendObject(measlesMap.pubsub);
@@ -134,14 +135,19 @@
 
 				window.onresize = resize;
 
-				function resize() {
-					var myId = measlesMap.params.selectedFeature;
-					var myYear = measlesMap.params.year;
-					params = buildParams(myId, myYear);
-					measlesMap.params = params;
-					measlesMap.updateMap();
-					measlesMap.buildData();
-					measlesMap.updateBrush();
+				function resize () {
+					if($(window).width() != width){
+						width = $(window).width();
+						var myId = measlesMap.params.selectedFeature;
+						var myYear = measlesMap.params.year;
+						var showCases = measlesMap.params.showCases;
+						console.log(showCases);
+						params = buildParams(myId, myYear, showCases);
+						measlesMap.params = params;
+						measlesMap.updateMap();
+						measlesMap.buildData();
+						measlesMap.updateBrush();
+					}
 				}
 			}
 		}, function () {

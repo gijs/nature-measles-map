@@ -1,4 +1,4 @@
-function buildParams (num, year) {
+function buildParams (num, year, showCases) {
 	var params = {};
 
 	var contentWidth = jQuery("#content").width();
@@ -77,7 +77,7 @@ function buildParams (num, year) {
 
 	params.duration = 100;
 
-	params.showCases = true;
+	params.showCases = showCases;
 
 	/* Max value is 1122285 -> from Excel */
 	params.color = d3.scale.linear()
