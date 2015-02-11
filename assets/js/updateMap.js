@@ -4,6 +4,9 @@ BuildWidget.prototype.updateMap = function() {
 	this.svg.attr("width", this.params.mapWidth)
 			.attr("height", this.params.mapHeight);
 
+	this.svgBG.attr("width", this.params.mapWidth)
+				.attr("height", this.params.mapHeight);
+
 	this.defs.attr("width", this.params.mapWidth)
 			.attr("height", this.params.mapHeight);
 

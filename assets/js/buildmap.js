@@ -4,6 +4,15 @@ BuildWidget.prototype.buildMap = function() {
 	this.svg = d3.select(this.params.mapTarget).append("svg")
 					.attr("width", this.params.mapWidth)
 					.attr("height", this.params.mapHeight);
+
+// background-color: #65A6D3;
+
+	this.svgBG = this.svg.append("rect")
+						.attr("x", 0)
+						.attr("y", 0)
+						.attr("width", this.params.mapWidth)
+						.attr("height", this.params.mapHeight)
+						.attr("fill", "#65A6D3");
 				  
 	this.defs = this.svg.append("defs").append("svg:clipPath")
 					.attr("id", "clip")

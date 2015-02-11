@@ -99,7 +99,6 @@
 }
 .outerwrapper .chart {
   position: relative;
-  background-color: #65A6D3;
   line-height: 0;
   margin: 0 15px;
 }
@@ -452,6 +451,15 @@ BuildWidget.prototype.buildMap = function() {
 	this.svg = d3.select(this.params.mapTarget).append("svg")
 					.attr("width", this.params.mapWidth)
 					.attr("height", this.params.mapHeight);
+
+// background-color: #65A6D3;
+
+	this.svgBG = this.svg.append("rect")
+						.attr("x", 0)
+						.attr("y", 0)
+						.attr("width", this.params.mapWidth)
+						.attr("height", this.params.mapHeight)
+						.attr("fill", "#65A6D3");
 				  
 	this.defs = this.svg.append("defs").append("svg:clipPath")
 					.attr("id", "clip")
@@ -1225,6 +1233,9 @@ BuildWidget.prototype.updateMap = function() {
 	this.svg.attr("width", this.params.mapWidth)
 			.attr("height", this.params.mapHeight);
 
+	this.svgBG.attr("width", this.params.mapWidth)
+				.attr("height", this.params.mapHeight);
+
 	this.defs.attr("width", this.params.mapWidth)
 			.attr("height", this.params.mapHeight);
 
@@ -1289,17 +1300,17 @@ BuildWidget.prototype.keyChosen = function(topic, func, parent) {
 };
 (function() {
 	var init = function($) {
-		// var casesURL = "data/cases-by-who-region.csv";
-		// var vaccinationURL = "data/vaccination-by-who-region.csv";
-		// var countriesURL = "data/countries.json";
-		// var d3URL = "http://d3js.org/d3.v3.min.js";
-		// var topojsonURL = "data/topojson.v1.min.js";
-
-		var casesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/cases-by-who-region.csv";
-		var vaccinationURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/vaccination-by-who-region.csv";
-		var countriesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/countries.json";
-		var d3URL = "http://www.nature.com/widget_assets_polopoly/v518n7538/d3.v3.min.js";
-		var topojsonURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/topojson.v1.min.js";
+		var casesURL = "data/cases-by-who-region.csv";
+		var vaccinationURL = "data/vaccination-by-who-region.csv";
+		var countriesURL = "data/countries.json";
+		var d3URL = "http://d3js.org/d3.v3.min.js";
+		var topojsonURL = "data/topojson.v1.min.js";
+		
+		// var casesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/cases-by-who-region.csv";
+		// var vaccinationURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/vaccination-by-who-region.csv";
+		// var countriesURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/countries.json";
+		// var d3URL = "http://www.nature.com/widget_assets_polopoly/v518n7538/d3.v3.min.js";
+		// var topojsonURL = "http://www.nature.com/widget_assets_polopoly/v518n7538/topojson.v1.min.js";
 
 		$.when( $.getScript(d3URL),
 				$.getScript(topojsonURL)
