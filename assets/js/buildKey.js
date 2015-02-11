@@ -40,7 +40,13 @@ BuildWidget.prototype.buildKey = function() {
 				.enter()
 			  .append("li")
 				.text(function (d,i) {
-					return self.params.format(d) + "%";
+					if (i === (self.params.key.vaccinationRange.length - 1) ) {
+						return "≥ " + self.params.format(d) + "%";
+					} else if (i === 0) {
+						return "≤ " + self.params.format(d) + "%";
+					} else {
+						return self.params.format(d) + "%";
+					}
 				})
 				.style("border-top-color", function (d) {
 					return self.params.vaccinationColor(d);

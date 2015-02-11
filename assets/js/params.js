@@ -26,7 +26,7 @@ function buildParams (num, year) {
 
 	params.key = {
 		keyRange: [20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000],
-		vaccinationRange: [10,20,30,40,50,60,70,80,90,100],
+		vaccinationRange: [10,20,30,40,50,60,70,80,90,95],
 		verticalShift: [20, 36, 60],
 		horizontalShift: 25,
 		keyHead: "Cases of measles",
